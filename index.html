@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#F8F7F4">
-<title>김덕용 테스트 페이지</title>
+<title>김덕용 포트폴리오</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -82,13 +82,13 @@ body {
 ══════════════════════════════════════ */
 nav {
   position: fixed; top: 0; width: 100%;
-  padding: clamp(1.2rem,3dvh,1.8rem) clamp(1.5rem,4vw,3rem);
+  padding: calc(clamp(1.2rem,3dvh,1.8rem) + env(safe-area-inset-top, 0px)) clamp(1.5rem,4vw,3rem) clamp(1.2rem,3dvh,1.8rem);
   z-index: 500;
   display: flex; align-items: center; justify-content: space-between;
   transition: background .35s, backdrop-filter .35s;
 }
 
-/* [수정] 어두운 배경 섹션에서 nav 색 전환 및 가독성 강화 */
+/* 어두운 배경 섹션에서 nav 색 전환 및 가독성 강화 */
 nav.on-dark .nav-logo { color: rgba(255,255,255,.55); }
 nav.on-dark .nav-logo:hover { color: #fff; }
 nav.on-dark .nav-logo span { color: var(--accent-dark); }
@@ -151,6 +151,12 @@ nav a.nl.active { color: var(--accent); }
   }
   .nav-links.open { opacity: 1; pointer-events: all; }
   nav a.nl { font-size: 1.1rem; }
+
+  /* [수정] 모바일 메뉴 가독성 보정 (항상 밝은 배경이므로 글자색 어둡게 강제 적용) */
+  nav.on-dark .nav-links.open a.nl { color: var(--ink-2) !important; }
+  nav.on-dark .nav-links.open a.nl:hover { color: var(--ink) !important; }
+  nav.on-dark .nav-links.open a.nl.active { color: var(--accent) !important; }
+  nav.on-dark .nav-links.open a.nl::after { background: var(--accent) !important; }
 }
 
 /* ══════════════════════════════════════
@@ -314,7 +320,7 @@ h1.hero .sub-line {
 #about {
   background: var(--ink);
   flex-direction: column;
-  padding: 0 clamp(1.5rem,6vw,6rem);
+  padding: env(safe-area-inset-top, 0px) clamp(1.5rem,6vw,6rem) env(safe-area-inset-bottom, 0px);
 }
 #about::before {
   content: '';
@@ -416,7 +422,7 @@ h1.hero .sub-line {
 ══════════════════════════════════════ */
 .port {
   flex-direction: column;
-  padding: clamp(3.5rem,7dvh,5.5rem) clamp(1.5rem,5vw,4rem) clamp(2rem,4dvh,3rem);
+  padding: calc(clamp(3.5rem,7dvh,5.5rem) + env(safe-area-inset-top, 0px)) clamp(1.5rem,5vw,4rem) calc(clamp(2rem,4dvh,3rem) + env(safe-area-inset-bottom, 0px));
   gap: clamp(1rem,2dvh,2rem);
   justify-content: center;
 }
@@ -483,7 +489,7 @@ h1.hero .sub-line {
 /* ══════════════════════════════════════
     ④ CONTACT
 ══════════════════════════════════════ */
-#contact { background: var(--ink); flex-direction:column; }
+#contact { background: var(--ink); flex-direction:column; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
 #contact::before {
   content:''; position:absolute; inset:0;
   background:
@@ -520,7 +526,7 @@ h1.hero .sub-line {
 .con-link:hover .con-icon svg { stroke:#fff; }
 .con-lbl { font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.25); }
 
-.con-foot { margin-top:2.5rem;display:flex;flex-direction:column;align-items:center;gap:.7rem; }
+.con-foot { margin-top:2.5rem;display:flex;flex-direction:column;align-items:center;gap:.7rem; padding-bottom: env(safe-area-inset-bottom, 0px); }
 .con-line { width:60px;height:1px;background:linear-gradient(to right,transparent,rgba(45,91,227,.6),transparent); }
 .con-copy { font-family:'DM Mono',monospace;font-size:.58rem;color:rgba(255,255,255,.15);letter-spacing:.1em; }
 
@@ -532,7 +538,7 @@ h1.hero .sub-line {
   background:rgba(10,9,7,.9);
   z-index:800;
   display:flex;align-items:center;justify-content:center;
-  padding:clamp(1rem,4vw,3rem);
+  padding:calc(clamp(1rem,4vw,3rem) + env(safe-area-inset-top, 0px)) clamp(1rem,4vw,3rem) calc(clamp(1rem,4vw,3rem) + env(safe-area-inset-bottom, 0px));
   opacity:0;pointer-events:none;transition:opacity .35s;
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
@@ -583,7 +589,7 @@ h1.hero .sub-line {
 .pop-counter { font-family:'DM Mono',monospace;font-size:.6rem;color:var(--ink-3);letter-spacing:.1em;text-align:right; }
 
 .pop-close {
-  position:absolute;top:.85rem;right:.85rem;
+  position:absolute;top:calc(.85rem + env(safe-area-inset-top, 0px));right:.85rem;
   width:40px;height:40px;min-width:44px;min-height:44px;
   background:rgba(15,27,53,.06);border:1px solid var(--line);
   color:var(--ink);font-size:1rem;
@@ -660,11 +666,16 @@ nav.on-dark ~ .dots .dot.on { background: var(--accent-dark); }
 @keyframes pulse{ 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.5)} }
 
 /* ══════════════════════════════════════
-    MOBILE LAYOUT FIX (헤더 침범 방지 및 사이즈 축소)
+    MOBILE LAYOUT FIX (헤더 침범 방지, 사이즈 축소, 커서 숨김 처리)
 ══════════════════════════════════════ */
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+  /* 모바일 해상도 및 터치 기기에서 마우스 포인터 효과 완전히 숨김 */
+  #c-dot, #c-ring { display: none !important; }
+}
+
 @media (max-width: 768px) {
   section {
-    /* 중앙 정렬을 풀고 위에서부터 순서대로 배치 */
+    /* 중앙 정렬을 풀고 위에서부터 순서대로 배치하여 헤더 침범 방지 */
     justify-content: flex-start !important;
     padding-top: calc(5.5rem + env(safe-area-inset-top, 0px)) !important;
     padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px)) !important;
@@ -672,7 +683,7 @@ nav.on-dark ~ .dots .dot.on { background: var(--accent-dark); }
     overflow-y: auto;
   }
   
-  /* 소개(About) 섹션 컴포넌트 전체 축소 */
+  /* 소개(About) 섹션 컴포넌트 전체 사이즈 축소 */
   .about-wrap { gap: 1.2rem !important; margin-top: 0.5rem; }
   .about-eyebrow { margin-bottom: 0.8rem !important; font-size: 0.55rem !important; }
   .about-title { font-size: 1.5rem !important; margin-bottom: 1rem !important; line-height: 1.2 !important; }
@@ -689,7 +700,7 @@ nav.on-dark ~ .dots .dot.on { background: var(--accent-dark); }
   .skill-row { padding: 0.6rem 0.8rem !important; gap: 0.6rem !important; }
   .skill-txt { font-size: 0.7rem !important; line-height: 1.3 !important; }
   
-  /* 기타 주요 섹션 보정 */
+  /* 기타 주요 섹션 폰트 보정 */
   h1.hero { font-size: 2.5rem !important; margin-bottom: 1rem !important; }
   .hero-desc { font-size: 0.8rem !important; line-height: 1.6 !important; }
   .cta-row { margin-top: 1.5rem !important; }
