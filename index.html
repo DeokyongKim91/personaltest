@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#F8F7F4">
-<title>김덕용 테스트 html</title>
+<title>김덕용 테스트 페이지</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -14,19 +14,19 @@
 ══════════════════════════════════════ */
 :root {
   --bg:        #FAFAFA;
-  --surface:  #F2F4F8;
+  --surface:   #F2F4F8;
   --ink:       #0F1B35;
-  --ink-2:    rgba(15,27,53,.45);
-  --ink-3:    rgba(15,27,53,.22);
+  --ink-2:     rgba(15,27,53,.45);
+  --ink-3:     rgba(15,27,53,.22);
   --accent:    #2D5BE3;
   --accent-dim: rgba(45,91,227,.18);
   --line:      rgba(15,27,53,.1);
   --epo:       cubic-bezier(0.16,1,0.3,1);
   --spr:       cubic-bezier(0.34,1.56,0.64,1);
   --gold:      #2D5BE3;
-  --gold-dim: rgba(45,91,227,.18);
+  --gold-dim:  rgba(45,91,227,.18);
   
-  /* 어두운 섹션용 포인트 컬러 */
+  /* 어두운 섹션용 포인트 컬러 (형광 민트) */
   --accent-dark: #00FFD1; 
 }
 
@@ -70,7 +70,9 @@ body {
   margin-left: -18px; margin-top: -18px;
   transition: opacity .3s, width .25s var(--epo), height .25s var(--epo), margin .25s var(--epo);
 }
-#c-ring.big { width:54px; height:54px; margin-left:-27px; margin-top:-27px; border-color:var(--accent); }
+#c-ring.big { 
+  width:54px; height:54px; margin-left:-27px; margin-top:-27px; border-color:var(--accent); 
+}
 
 /* ══════════════════════════════════════
     RIPPLE
@@ -78,7 +80,7 @@ body {
 #ripple { position:fixed; inset:0; pointer-events:none; z-index:1; }
 
 /* ══════════════════════════════════════
-    NAV
+    NAV (세이프 영역 대응 및 색상 보정)
 ══════════════════════════════════════ */
 nav {
   position: fixed; top: 0; width: 100%;
@@ -92,7 +94,7 @@ nav {
 nav.on-dark .nav-logo { color: rgba(255,255,255,.55); }
 nav.on-dark .nav-logo:hover { color: #fff; }
 nav.on-dark .nav-logo span { color: var(--accent-dark); }
-nav.on-dark .ham span { background: rgba(255,255,255,.75); }
+nav.on-dark .ham span { background: #fff; }
 nav.on-dark a.nl { color: rgba(255,255,255,.45); }
 nav.on-dark a.nl:hover { color: #fff; }
 nav.on-dark a.nl.active { color: var(--accent-dark); }
@@ -121,6 +123,7 @@ nav.on-dark a.nl::after { background: var(--accent-dark); }
 .ham.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
 .ham.open span:nth-child(2) { opacity: 0; }
 .ham.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
 .nav-links { display: flex; align-items: center; gap: 2.5rem; }
 nav a.nl {
   font-size: .68rem; font-weight: 500;
@@ -139,20 +142,20 @@ nav a.nl:hover { color: var(--ink); }
 nav a.nl:hover::after, nav a.nl.active::after { width: 100%; }
 nav a.nl.active { color: var(--accent); }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .ham { display: flex; }
   .nav-links {
     position: fixed; inset: 0;
-    background: rgba(248,247,244,0.97);
+    background: rgba(248,247,244,0.98);
     backdrop-filter: blur(16px);
     flex-direction: column; justify-content: center; gap: 2.5rem;
     opacity: 0; pointer-events: none;
     transition: opacity .3s; z-index: 498;
   }
   .nav-links.open { opacity: 1; pointer-events: all; }
-  nav a.nl { font-size: 1.1rem; }
+  nav a.nl { font-size: 1.2rem; }
 
-  /* [수정] 모바일 메뉴 가독성 보정 (항상 밝은 배경이므로 글자색 어둡게 강제 적용) */
+  /* 모바일 햄버거 메뉴 강제 색상 고정 (어두운 배경 섹션에서도 흰색 텍스트 안보임 방지) */
   nav.on-dark .nav-links.open a.nl { color: var(--ink-2) !important; }
   nav.on-dark .nav-links.open a.nl:hover { color: var(--ink) !important; }
   nav.on-dark .nav-links.open a.nl.active { color: var(--accent) !important; }
@@ -418,7 +421,7 @@ h1.hero .sub-line {
 .skill-txt strong { color:rgba(255,255,255,.9); font-weight:500; display:block; }
 
 /* ══════════════════════════════════════
-    ③ 포트폴리오 섹션 공통
+    ③ PORTFOLIO (BENTO GRID & HOVER FX)
 ══════════════════════════════════════ */
 .port {
   flex-direction: column;
@@ -446,50 +449,71 @@ h1.hero .sub-line {
 .sec-title{ font-family:'Noto Serif KR',serif;font-size:clamp(1.3rem,2.8vw,2.2rem);font-weight:700;color:var(--ink);line-height:1.2;letter-spacing:-.01em; }
 .sec-desc { font-size:.78rem;color:var(--ink-2);line-height:1.7;max-width:520px;margin-top:.2rem;font-weight:300; }
 
+/* 벤토 박스 레이아웃 (Grid Auto Flow Dense) */
 .gallery {
-  width:100%;max-width:1200px;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:clamp(.35rem,.7vw,.7rem);
+  width: 100%; max-width: 1200px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-flow: dense;
+  gap: clamp(.35rem, .7vw, .7rem);
 }
 @media(max-width:900px){ .gallery{grid-template-columns:repeat(3,1fr);} }
 @media(max-width:560px){ .gallery{grid-template-columns:repeat(2,1fr);} }
 
+/* 갤러리 아이템 래퍼 */
 .g-item {
-  aspect-ratio:4/3;overflow:hidden;position:relative;
-  outline:1px solid var(--line);outline-offset:-1px;
-  transition:transform .5s var(--epo),box-shadow .5s var(--epo);
-  cursor:pointer;
+  aspect-ratio: 4/3; position: relative; overflow: hidden;
+  outline: 1px solid var(--line); outline-offset: -1px;
+  transition: transform .5s var(--epo), box-shadow .5s var(--epo);
+  cursor: pointer; background: #E5E7EB;
 }
-.g-item img {
-  width:100%;height:100%;object-fit:cover;display:block;
-  transition:transform .7s var(--epo),filter .5s;
-  filter:brightness(.96) saturate(.85);
+
+/* 데이터 속성에 따른 크기 변형 클래스 */
+.g-item.type-large { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; }
+.g-item.type-col { grid-column: span 2; aspect-ratio: auto; }
+
+/* 기본 이미지 (흑백 필터 적용) */
+.g-item img.static-img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  filter: grayscale(100%) brightness(0.85) contrast(1.1);
+  transition: transform 0.7s var(--epo), filter 0.5s;
 }
+
+/* 호버 오버레이 텍스트 */
 .g-over {
-  position:absolute;inset:0;
-  background:linear-gradient(160deg,rgba(45,91,227,.07) 0%,rgba(15,27,53,.55) 100%);
-  display:flex;align-items:flex-end;padding:.9rem 1.1rem;
-  opacity:0;transition:opacity .3s;
+  position: absolute; inset: 0; z-index: 3;
+  background: linear-gradient(160deg, rgba(45,91,227,.0) 0%, rgba(15,27,53,.65) 100%);
+  display: flex; align-items: flex-end; padding: .9rem 1.1rem;
+  opacity: 0; transition: opacity .3s; pointer-events: none;
 }
 .g-over span {
-  font-family:'DM Mono',monospace;
-  font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;
-  color:rgba(250,250,250,.9);display:flex;align-items:center;gap:.4rem;
+  font-family: 'DM Mono', monospace; font-size: .56rem; letter-spacing: .2em; text-transform: uppercase;
+  color: rgba(250,250,250,.9); display: flex; align-items: center; gap: .4rem;
 }
-.g-over span::before { content:'';width:12px;height:1px;background:var(--accent);display:inline-block; }
+.g-over span::before { content:''; width:12px; height:1px; background:var(--accent); display:inline-block; }
 
-@media(hover:hover){
-  .g-item:hover img { transform:scale(1.05);filter:brightness(1) saturate(1); }
-  .g-item:hover .g-over { opacity:1; }
-  .g-item:hover { box-shadow:0 12px 40px rgba(15,27,53,.14),0 0 0 1px rgba(45,91,227,.2); }
+/* GIF 레이어 (초기엔 숨김) */
+.g-item img.hover-gif {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; z-index: 2; transition: opacity 0.4s, transform 0.7s var(--epo);
 }
-@media(hover:none){ .g-item:active{transform:scale(.97);} }
+
+/* PC 환경 호버 인터랙션 통합 */
+@media (hover: hover) {
+  .g-item:hover { box-shadow: 0 12px 40px rgba(15,27,53,.14), 0 0 0 1px rgba(45,91,227,.2); z-index: 5; }
+  .g-item:hover img.static-img { filter: grayscale(0%) brightness(1) contrast(1); transform: scale(1.05); }
+  .g-item:hover img.hover-gif { opacity: 1; transform: scale(1.05); }
+  .g-item:hover .g-over { opacity: 1; }
+}
+@media (hover: none) { .g-item:active { transform: scale(.97); } }
 
 /* ══════════════════════════════════════
     ④ CONTACT
 ══════════════════════════════════════ */
-#contact { background: var(--ink); flex-direction:column; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+#contact {
+  background: var(--ink); flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+}
 #contact::before {
   content:''; position:absolute; inset:0;
   background:
@@ -500,8 +524,7 @@ h1.hero .sub-line {
 .con-inner { text-align:center;position:relative;z-index:2;padding:0 clamp(1.5rem,5vw,4rem);max-width:760px; }
 .con-badge {
   display:inline-flex;align-items:center;gap:.5rem;
-  font-family:'DM Mono',monospace;
-  font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;
+  font-family:'DM Mono',monospace; font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;
   color:var(--accent);border:1px solid rgba(45,91,227,.3);padding:.4rem 1.1rem;margin-bottom:2rem;
 }
 .con-badge::before { content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite; }
@@ -666,7 +689,7 @@ nav.on-dark ~ .dots .dot.on { background: var(--accent-dark); }
 @keyframes pulse{ 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.5)} }
 
 /* ══════════════════════════════════════
-    MOBILE LAYOUT FIX (헤더 침범 방지, 사이즈 축소, 커서 숨김 처리)
+    MOBILE LAYOUT FIX (헤더 침범 방지, 사이즈 축소, 커서 숨김)
 ══════════════════════════════════════ */
 @media (max-width: 768px), (hover: none) and (pointer: coarse) {
   /* 모바일 해상도 및 터치 기기에서 마우스 포인터 효과 완전히 숨김 */
@@ -700,6 +723,11 @@ nav.on-dark ~ .dots .dot.on { background: var(--accent-dark); }
   .skill-row { padding: 0.6rem 0.8rem !important; gap: 0.6rem !important; }
   .skill-txt { font-size: 0.7rem !important; line-height: 1.3 !important; }
   
+  /* 모바일 벤토 그리드 풀기 (와이드 배너 형태) */
+  .g-item.type-large, .g-item.type-col { grid-column: span 2; grid-row: auto; aspect-ratio: 16/9; }
+  /* 모바일에서는 호버가 없으므로 정지 이미지를 기본 컬러로 보여줌 */
+  .g-item img.static-img { filter: none !important; }
+
   /* 기타 주요 섹션 폰트 보정 */
   h1.hero { font-size: 2.5rem !important; margin-bottom: 1rem !important; }
   .hero-desc { font-size: 0.8rem !important; line-height: 1.6 !important; }
@@ -988,15 +1016,19 @@ nav.on-dark ~ .dots .dot.on { background: var(--accent-dark); }
 <script>
 'use strict';
 
+/* [벤토 레이아웃 및 호버 효과 적용 가이드]
+  - type: 'large' (크게 2x2칸 차지), type: 'col' (가로로 2칸 차지). 이 속성을 지우면 기본 1x1칸.
+  - gif: '호버 시 재생될 GIF 이미지 주소'. 이 속성을 지우면 일반 컬러 이미지만 보임.
+*/
 const DATA = [
   {id:'g1', items:[
-    { t:'인터넷뱅킹 조회·이체 UIUX 개편', s:'NH기업뱅킹 2024 차세대 · 서비스 기획', k:10, desc:'인터넷뱅킹 조회·이체 메뉴 전반의 UIUX 흐름을 재정의했습니다. 기존 메뉴 구조의 복잡도를 줄이고, 반복 사용자의 효율적인 동선을 중심으로 화면을 설계했습니다.', tags:['UIUX 기획','인터넷뱅킹','플로우 설계'], link:'#' },
-    { t:'금융 허브 연계 시뮬레이션 서비스 기획', s:'NH기업뱅킹 2024 차세대 · 서비스 기획', k:20, desc:'금융 허브와 연계한 시뮬레이션 서비스를 기획하고 chart.js 기반 샘플 HTML까지 직접 작성했습니다. 데이터 시각화와 기획의 경계를 직접 연결한 경험이었습니다.', tags:['시뮬레이션 기획','데이터 시각화','chart.js'], link:'#' },
+    { t:'인터넷뱅킹 조회·이체 UIUX 개편', s:'NH기업뱅킹 2024 차세대 · 서비스 기획', k:10, type:'large', gif:'https://media.giphy.com/media/xT9IgzoKnwFNmISR8I/giphy.gif', desc:'인터넷뱅킹 조회·이체 메뉴 전반의 UIUX 흐름을 재정의했습니다. 기존 메뉴 구조의 복잡도를 줄이고, 반복 사용자의 효율적인 동선을 중심으로 화면을 설계했습니다.', tags:['UIUX 기획','인터넷뱅킹','플로우 설계'], link:'#' },
+    { t:'금융 허브 연계 시뮬레이션 서비스 기획', s:'NH기업뱅킹 2024 차세대 · 서비스 기획', k:20, type:'col', desc:'금융 허브와 연계한 시뮬레이션 서비스를 기획하고 chart.js 기반 샘플 HTML까지 직접 작성했습니다. 데이터 시각화와 기획의 경계를 직접 연결한 경험이었습니다.', tags:['시뮬레이션 기획','데이터 시각화','chart.js'], link:'#' },
     { t:'입출금알림PUSH · 결재함 서비스 개선', s:'NH기업뱅킹 2024 차세대 · 서비스 기획', k:30, desc:'실시간 알림 서비스의 발송 조건 재설계와 결재함 UI 개선을 담당했습니다. 기업 사용자가 많은 만큼 오류 발생 시 임팩트가 크기 때문에 예외 케이스를 최우선으로 정의했습니다.', tags:['PUSH 기획','결재함 개선','예외처리'], link:'#' },
     { t:'스마트뱅킹 이체내역·거래내역 UIUX 개선', s:'NH기업뱅킹 2024 차세대 · 서비스 기획', k:40, desc:'모바일 환경에서 이체·거래 내역 조회 흐름과 필터 구조를 재설계했습니다. 빈번하게 사용되는 기능인 만큼, 한 화면에서 원하는 정보를 바로 찾을 수 있는 구조에 집중했습니다.', tags:['스마트뱅킹','조회 UX','모바일 기획'], link:'#' },
   ]},
   {id:'g2', items:[
-    { t:'2026 도급운영(SM) PL 기획 총괄', s:'NH기업뱅킹 2026 · 상시운영 PL', k:50, desc:'운영 기간 전체의 일정 관리, 요구사항 사전 협의, 배포 관리까지 PL로서 운영 전반을 총괄하고 있습니다.', tags:['PL 업무','일정 관리','제안 발표'], link:'#' },
+    { t:'2026 도급운영(SM) PL 기획 총괄', s:'NH기업뱅킹 2026 · 상시운영 PL', k:50, type:'col', gif:'https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif', desc:'운영 기간 전체의 일정 관리, 요구사항 사전 협의, 배포 관리까지 PL로서 운영 전반을 총괄하고 있습니다.', tags:['PL 업무','일정 관리','제안 발표'], link:'#' },
     { t:'비대면 개인사업자 오픈뱅킹 서비스 기획', s:'NH기업뱅킹 2023 디지털 플랫폼 고도화', k:60, desc:'스마트·인터넷 개인사업자 채널의 오픈뱅킹 파트를 기획했습니다. 타 금융기관 계좌 연결 흐름과 인증 프로세스를 중심으로 사용자 관점의 단계 최소화에 집중했습니다.', tags:['오픈뱅킹','비대면','고도화'], link:'#' },
     { t:'2025 도급운영(SM) 경쟁 입찰 제안 발표', s:'NH기업뱅킹 2025 · 제안 발표', k:70, desc:'제안 자료 제작 30%와 발표 100%를 담당했습니다. 고객사의 요구사항을 정확히 반영한 제안 전략을 수립했습니다.', tags:['제안서','발표','경쟁 입찰'], link:'#' },
     { t:'하나은행 정보단말 공통 UIUX 정책 기획', s:'2025 하나은행 정보단말 고도화 · 단독 기획', k:80, desc:'단독으로 하나은행 정보단말의 공통 UIUX 정책을 처음부터 끝까지 설계했습니다. 일관된 인터랙션 가이드라인을 정의했습니다.', tags:['UIUX 정책','단독 기획','정보단말'], link:'#' },
@@ -1026,16 +1058,24 @@ const FLAT = DATA.flatMap(d => d.items);
 DATA.forEach(d => {
   const grid = document.getElementById(d.id);
   if (!grid) return;
+  
   d.items.forEach(item => {
     const idx = FLAT.indexOf(item);
     const el  = document.createElement('div');
-    el.className = 'g-item';
+    
+    // 벤토 레이아웃을 위한 클래스 동적 부여
+    el.className = 'g-item' + (item.type ? ' type-' + item.type : '');
     el.setAttribute('role','button');
     el.setAttribute('tabindex','0');
     el.setAttribute('aria-label', item.t + ' 상세 보기');
-    el.innerHTML =
-      `<img src="https://picsum.photos/seed/${item.k}/600/450" alt="${item.t}" loading="lazy">` +
-      `<div class="g-over"><span>자세히 보기</span></div>`;
+    
+    // 정지 이미지 (추후 src 경로를 본인이 올린 사진 경로로 교체 필요)
+    let inner = `<img class="static-img" src="https://picsum.photos/seed/${item.k}/600/450" alt="${item.t}" loading="lazy">`;
+    // GIF 이미지가 배열에 있다면 HTML에 추가
+    if(item.gif) inner += `<img class="hover-gif" src="${item.gif}" alt="${item.t} GIF" loading="lazy">`;
+    
+    inner += `<div class="g-over"><span>자세히 보기</span></div>`;
+    el.innerHTML = inner;
     
     el.addEventListener('click', () => openPopup(idx));
     el.addEventListener('keydown', e => {
@@ -1201,7 +1241,8 @@ function renderPop(){
   const item = FLAT[pidx];
   popImg.style.opacity = '0';
   const im = new Image();
-  im.src = `https://picsum.photos/seed/${item.k}/1200/800`;
+  // 팝업 시 GIF가 있으면 GIF 원본을, 없으면 정지 이미지 원본 노출
+  im.src = item.gif ? item.gif : `https://picsum.photos/seed/${item.k}/1200/800`;
   im.onload = () => { popImg.src = im.src; popImg.style.opacity = '1'; };
   popTitle.textContent = item.t;
   popSub.textContent = item.s;
@@ -1215,6 +1256,7 @@ function renderPop(){
   popCounter.textContent = `${pidx + 1} / ${FLAT.length}`;
   popExtLink.href = item.link || '#';
 }
+
 document.getElementById('popClose').addEventListener('click', closePop);
 popOv.addEventListener('click', e => { if(e.target === popOv) closePop(); });
 document.getElementById('popPrev').addEventListener('click', () => { pidx = (pidx - 1 + FLAT.length) % FLAT.length; renderPop(); });
