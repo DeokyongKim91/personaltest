@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#EBEBE9">
+<title>김덕용 포트폴리오</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;800;900&family=Noto+Serif+KR:wght@400;500;700&family=Noto+Sans+KR:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+<style>
+/* ══════════════════════════════════════
+    TOKENS
+══════════════════════════════════════ */
+:root {
+  --bg: #EBEBE9;         
+  --ink: #111111;        
+  --ink-light: #555555;  
+  --accent: #2D5BE3;     
+  --line: rgba(17, 17, 17, 0.15);
+  --epo: cubic-bezier(0.16, 1, 0.3, 1);
+  --reveal: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* ══════════════════════════════════════
+    RESET & BASE
+══════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; background-color: var(--ink); /* 인트로 시작 시 배경색(다크) */ }
+body {
+  color: var(--ink);
+  font-family: 'Noto Sans KR', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden; cursor: none;
+}
+::selection { background: var(--ink); color: var(--bg); }
+
+/* ══════════════════════════════════════
+    [NEW] INTRO REVEAL ANIMATION (점이 확장되는 효과)
+══════════════════════════════════════ */
+#page-wrapper {
+  background-color: var(--bg);
+  min-height: 100dvh;
+  /* 원형 마스크가 화면 중앙에서 점으로 시작해 전체 화면으로 커집니다 */
+  clip-path: circle(0px at 50% 50%);
+  animation: revealPage 2.4s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+}
+
+@keyframes revealPage {
+  0%   { clip-path: circle(0px at 50% 50%); }
+  15%  { clip-path: circle(10px at 50% 50%); } /* 중앙에 점 등장 */
+  40%  { clip-path: circle(10px at 50% 50%); } /* 잠시 멈춤 */
+  100% { clip-path: circle(150vmax at 50% 50%); } /* 화면 전체로 확장 */
+}
+
+/* ══════════════════════════════════════
+    CUSTOM CURSOR
+══════════════════════════════════════ */
+#cursor {
+  position: fixed; top: 0; left: 0;
+  width: 14px; height: 14px;
+  background-color: #fff;
+  border-radius: 50%; pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s var(--epo), height 0.4s var(--epo);
+  mix-blend-mode: difference; 
+}
+#cursor.hover { width: 60px; height: 60px; }
+
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+  #cursor { display: none !important; }
+  body { cursor: auto; }
+}
+
+/* ══════════════════════════════════════
+    TYPOGRAPHY UTILS (글자 짤림 완벽 해결)
+══════════════════════════════════════ */
+.serif { font-family: 'Noto Serif KR', serif; }
+.mono { font-family: 'DM Mono', monospace; }
+.poppins { font-family: 'Poppins', sans-serif; }
+
+.text-reveal { 
+  overflow: hidden; display: inline-block; vertical-align: bottom; 
+  /* [수정] 아래쪽 여백을 충분히 주어 g, y 등의 하단 꼬리가 잘리지 않도록 보호 */
+  padding-bottom: 0.3em; margin-bottom: -0.3em; 
+}
+.text-reveal span { 
+  display: inline-block; transform: translateY(110%) skewY(5deg); 
+  transition: transform 1.2s var(--reveal); 
+}
+.text-reveal.visible span { transform: translateY(0) skewY(0); }
+
+.fade-up { opacity: 0; transform: translateY(30px); transition: opacity 1s var(--epo), transform 1s var(--epo); }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* ══════════════════════════════════════
+    NAVIGATION & FULLSCREEN MENU
+══════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; width: 100%;
+  padding: clamp(1.5rem, 3vw, 2rem) clamp(1.5rem, 5vw, 4rem);
+  display: flex; justify-content: space-between; align-items: center;
+  z-index: 500; mix-blend-mode: difference; color: #fff;
+  opacity: 0; animation: fadeInNav 1s 1.2s forwards; /* 점이 커질 때 헤더 등장 */
+}
+@keyframes fadeInNav { to { opacity: 1; } }
+
+.logo { font-size: 1rem; letter-spacing: 0.05em; text-decoration: none; color: inherit; text-transform: uppercase; font-weight: 500; }
+.menu-btn { font-size: 0.9rem; text-transform: uppercase; background: none; border: none; color: inherit; font-weight: 500; transition: opacity 0.3s; }
+
+/* [NEW] 풀스크린 메뉴 오버레이 */
+.menu-overlay {
+  position: fixed; inset: 0; background-color: var(--ink); color: var(--bg);
+  z-index: 400; display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.6s var(--epo);
+}
+.menu-overlay.open { opacity: 1; pointer-events: all; }
+.menu-nav { display: flex; flex-direction: column; gap: 1.5rem; text-align: center; }
+.menu-link { 
+  font-family: 'Noto Serif KR', serif; font-size: clamp(3rem, 8vw, 5rem); 
+  font-weight: 500; text-decoration: none; color: var(--bg); 
+  transition: color 0.3s, transform 0.4s var(--epo); transform: translateY(20px); opacity: 0;
+}
+.menu-overlay.open .menu-link { transform: translateY(0); opacity: 1; }
+.menu-link:hover { color: var(--accent); }
+.menu-overlay.open .menu-link:nth-child(1) { transition-delay: 0.1s; }
+.menu-overlay.open .menu-link:nth-child(2) { transition-delay: 0.2s; }
+.menu-overlay.open .menu-link:nth-child(3) { transition-delay: 0.3s; }
+.menu-overlay.open .menu-link:nth-child(4) { transition-delay: 0.4s; }
+
+/* ══════════════════════════════════════
+    LAYOUT UTILS (Sticky Section)
+══════════════════════════════════════ */
+.container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 clamp(1.5rem, 5vw, 4rem); }
+.section-padding { padding: clamp(6rem, 15vh, 10rem) 0; }
+
+.sticky-wrapper { display: flex; align-items: flex-start; justify-content: space-between; gap: 4rem; }
+.sticky-header { position: sticky; top: 15vh; width: 35%; flex-shrink: 0; display: flex; flex-direction: column; gap: 1.5rem; }
+.scroll-content { width: 60%; display: flex; flex-direction: column; gap: 4rem; }
+
+.sec-number { font-size: 2rem; font-weight: 400; line-height: 1; border-bottom: 1px solid var(--ink); padding-bottom: 1rem; display: inline-block; width: 40px; }
+.sec-title { font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; }
+.sec-desc { font-size: 1rem; color: var(--ink-light); line-height: 1.7; font-weight: 300; }
+
+@media (max-width: 900px) {
+  .sticky-wrapper { flex-direction: column; gap: 3rem; }
+  .sticky-header { position: relative; top: 0; width: 100%; }
+  .scroll-content { width: 100%; }
+  .sec-title { font-size: 2.5rem; }
+}
+
+/* ══════════════════════════════════════
+    HERO SECTION
+══════════════════════════════════════ */
+.hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; position: relative; }
+.hero-tag { font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2rem; display: block; font-weight: 500;}
+.hero-headline { font-size: clamp(3.5rem, 9vw, 8rem); font-weight: 500; line-height: 1.05; letter-spacing: -0.03em; max-width: 1200px; }
+.hero-headline em { font-style: italic; color: var(--accent); }
+
+/* ══════════════════════════════════════
+    EXPERIENCE
+══════════════════════════════════════ */
+.exp-list { display: flex; flex-direction: column; width: 100%; border-top: 1px solid var(--line); }
+.exp-item {
+  position: relative;
+  display: grid; grid-template-columns: 1fr 2.5fr 1.5fr auto; gap: 2rem; align-items: start;
+  padding: 3rem 1rem; border-bottom: 1px solid var(--line);
+  text-decoration: none; color: inherit; cursor: none;
+  overflow: hidden; transition: color 0.4s var(--epo), padding 0.5s var(--epo);
+}
+.exp-item::before {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  width: 100%; height: 0%; background: var(--ink);
+  transition: height 0.5s var(--epo); z-index: -1;
+}
+.exp-item:hover { color: var(--bg); padding-left: 2rem; padding-right: 2rem; border-bottom-color: transparent;}
+.exp-item:hover::before { height: 100%; }
+
+.exp-year { font-size: 1.2rem; font-weight: 500; }
+.exp-details { display: flex; flex-direction: column; gap: 0.8rem; }
+.exp-name { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.01em; }
+.exp-desc { font-size: 1rem; line-height: 1.6; font-weight: 300; opacity: 0.7; }
+.exp-role { font-size: 1rem; }
+.exp-arrow { font-size: 1.8rem; font-weight: 300; transition: transform 0.4s var(--epo); }
+
+.exp-item:hover .exp-arrow { transform: translate(10px, -10px); }
+
+@media (max-width: 900px) {
+  .exp-item { grid-template-columns: 1fr; gap: 1rem; padding: 2rem 0; }
+  .exp-item:hover { padding-left: 1rem; padding-right: 1rem; }
+  .exp-year { margin-bottom: -0.5rem; }
+  .exp-arrow { display: none; }
+}
+
+/* ══════════════════════════════════════
+    SERVICES
+══════════════════════════════════════ */
+.srv-list { display: flex; flex-direction: column; gap: 4rem; }
+.srv-item { display: flex; flex-direction: column; gap: 1.5rem; }
+.srv-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--ink); padding-bottom: 1rem; }
+.srv-title { font-size: 2.2rem; font-weight: 500; }
+.srv-num { font-size: 1.2rem; }
+.srv-desc { font-size: 1.1rem; line-height: 1.8; font-weight: 300; color: var(--ink-light); }
+.srv-tags { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+.srv-tag { font-size: 0.8rem; padding: 0.4rem 0.8rem; border: 1px solid var(--line); border-radius: 40px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ══════════════════════════════════════
+    MARQUEE (중간 분리선)
+══════════════════════════════════════ */
+.marquee-divider {
+  width: 100%; padding: 4rem 0; background: var(--ink); color: var(--bg);
+  overflow: hidden; white-space: nowrap; display: flex; align-items: center;
+}
+.marquee-inner-div { display: flex; animation: marquee-left 25s linear infinite; font-size: 4vw; font-weight: 500; text-transform: uppercase; }
+.marquee-inner-div span { padding-right: 3rem; display: flex; align-items: center; gap: 3rem; }
+
+/* ══════════════════════════════════════
+    FOOTER / CONTACT
+══════════════════════════════════════ */
+footer { 
+  position: relative;
+  padding: clamp(8rem, 20vh, 14rem) 0 2rem; 
+  background: var(--ink); color: var(--bg);
+  text-align: center; overflow: hidden;
+}
+
+.contact-marquee-wrapper {
+  position: absolute; top: 45%; left: 0; width: 100%;
+  transform: translateY(-50%); display: flex; flex-direction: column; gap: 1.5rem;
+  pointer-events: none; opacity: 0.15; z-index: 1;
+}
+
+.contact-marquee {
+  display: flex; white-space: nowrap; font-family: 'Poppins', sans-serif;
+  font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; text-transform: uppercase;
+  color: transparent; -webkit-text-stroke: 1.5px var(--bg); 
+}
+
+.contact-marquee span { padding-right: 2rem; display: flex; gap: 2rem; }
+.marquee-left { animation: marquee-left 35s linear infinite; }
+.marquee-right { animation: marquee-right 35s linear infinite; }
+
+@keyframes marquee-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+@keyframes marquee-right { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+
+.footer-title { 
+  position: relative; z-index: 2; 
+  font-size: clamp(3.5rem, 12vw, 9rem); font-weight: 700; 
+  margin-bottom: 4rem; letter-spacing: -0.02em; 
+}
+.footer-title a { color: var(--bg); text-decoration: none; position: relative; }
+.footer-title a::after { 
+  content: ''; position: absolute; bottom: 0; left: 0; 
+  width: 100%; height: clamp(2px, 0.5vw, 6px); background: var(--bg); 
+  transform: scaleX(0); transform-origin: right; transition: transform 0.5s var(--epo); 
+}
+.footer-title a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+.footer-bottom { 
+  position: relative; z-index: 2;
+  display: flex; justify-content: space-between; 
+  padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.15); 
+  font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.6);
+}
+@media (max-width: 640px) { .footer-bottom { flex-direction: column; gap: 1rem; } }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<nav id="navbar">
+  <a href="#main" class="logo mono hover-target">KDY.portfolio</a>
+  <button class="menu-btn mono hover-target" id="menuBtn">MENU</button>
+</nav>
+
+<div class="menu-overlay" id="menuOverlay">
+  <div class="menu-nav">
+    <a href="#main" class="menu-link hover-target">Home</a>
+    <a href="#about" class="menu-link hover-target">Expertise</a>
+    <a href="#work" class="menu-link hover-target">History</a>
+    <a href="#contact" class="menu-link hover-target">Contact</a>
+  </div>
+</div>
+
+<div id="page-wrapper">
+  
+  <section class="hero container" id="main">
+    <span class="hero-tag mono fade-up">Service Planner & Project Leader</span>
+    <h1 class="hero-headline serif">
+      <span class="text-reveal"><span>Making</span></span><br>
+      <span class="text-reveal"><span><em>ideas</em></span></span><br>
+      <span class="text-reveal"><span>visible.</span></span>
+    </h1>
+  </section>
+
+  <section class="section-padding container" id="about">
+    <div class="sticky-wrapper">
+      <div class="sticky-header fade-up">
+        <span class="sec-number serif">01</span>
+        <h2 class="sec-title serif">Service<br>Expertise</h2>
+        <p class="sec-desc">화려한 겉모습보다 서비스가 오랫동안 견고하게 작동하도록 만드는 뼈대와 정책 설계에 집착합니다.</p>
+      </div>
+      
+      <div class="scroll-content">
+        <div class="srv-list">
+          <div class="srv-item fade-up">
+            <div class="srv-head"><h3 class="srv-title serif">Service Planning</h3><span class="srv-num mono">1/4</span></div>
+            <p class="srv-desc">비즈니스 요구사항 분석, 플로우 정의 및 화면 설계 수행.</p>
+            <div class="srv-tags mono"><span class="srv-tag">Requirement Analysis</span><span class="srv-tag">Flow Design</span></div>
+          </div>
+          <div class="srv-item fade-up">
+            <div class="srv-head"><h3 class="srv-title serif">UI/UX Design</h3><span class="srv-num mono">2/4</span></div>
+            <p class="srv-desc">단순 심미성을 넘어 엣지 케이스와 예외 상황을 고려한 인터페이스 정책 수립.</p>
+            <div class="srv-tags mono"><span class="srv-tag">Interface Policy</span><span class="srv-tag">Prototyping</span></div>
+          </div>
+          <div class="srv-item fade-up">
+            <div class="srv-head"><h3 class="srv-title serif">Project Leading</h3><span class="srv-num mono">3/4</span></div>
+            <p class="srv-desc">이해관계자 커뮤니케이션 조율, 일정 및 배포 리스크 관리 완수.</p>
+            <div class="srv-tags mono"><span class="srv-tag">Schedule Management</span><span class="srv-tag">Communication</span></div>
+          </div>
+          <div class="srv-item fade-up">
+            <div class="srv-head"><h3 class="srv-title serif">Research</h3><span class="srv-num mono">4/4</span></div>
+            <p class="srv-desc">현장 방문 인터뷰 및 데이터 기반의 리서치를 통해 진짜 문제를 정의하고 개선안을 도출합니다.</p>
+            <div class="srv-tags mono"><span class="srv-tag">User Interview</span><span class="srv-tag">Data Insight</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee-divider poppins">
+    <div class="marquee-inner-div">
+      <span>UI/UX Service Planner • NH Next-Gen PL • Digital Platform • Creative Problem Solver •</span>
+      <span>UI/UX Service Planner • NH Next-Gen PL • Digital Platform • Creative Problem Solver •</span>
+    </div>
+  </div>
+
+  <section class="section-padding container" id="work">
+    <div class="sticky-wrapper">
+      <div class="sticky-header fade-up">
+        <span class="sec-number serif">02</span>
+        <h2 class="sec-title serif">Selected<br>History</h2>
+        <p class="sec-desc">금융 SI 및 커머스 플랫폼 고도화 프로젝트의 핵심 수행 이력 요약.</p>
+      </div>
+      
+      <div class="scroll-content">
+        <div class="exp-list">
+          <a href="#" class="exp-item hover-target fade-up">
+            <div class="exp-year mono">2026</div>
+            <div class="exp-details">
+              <h3 class="exp-name">NH기업뱅킹 도급운영 총괄</h3>
+              <p class="exp-desc">운영 기간 전체 일정 관리, 요구사항 사전 협의, 배포 관리 및 운영 전반 총괄 수행.</p>
+            </div>
+            <div class="exp-role mono">PL (100%)</div>
+            <div class="exp-arrow">↗</div>
+          </a>
+          
+          <a href="#" class="exp-item hover-target fade-up">
+            <div class="exp-year mono">2025</div>
+            <div class="exp-details">
+              <h3 class="exp-name">비대면 신규가입 & 전자약정 기획</h3>
+              <p class="exp-desc">비대면 개인/법인 여신 전자약정 프로세스 설계 및 법인 전자금융 신규 가입 플로우 기획 완료.</p>
+            </div>
+            <div class="exp-role mono">Planner (100%)</div>
+            <div class="exp-arrow">↗</div>
+          </a>
+
+          <a href="#" class="exp-item hover-target fade-up">
+            <div class="exp-year mono">2024</div>
+            <div class="exp-details">
+              <h3 class="exp-name">NH기업뱅킹 차세대 구축</h3>
+              <p class="exp-desc">조회·이체 전반 UIUX 개편, 금융 허브 연계 기획, 입출금 알림 PUSH 서비스 개선.</p>
+            </div>
+            <div class="exp-role mono">Planner (100%)</div>
+            <div class="exp-arrow">↗</div>
+          </a>
+
+          <a href="#" class="exp-item hover-target fade-up">
+            <div class="exp-year mono">2023</div>
+            <div class="exp-details">
+              <h3 class="exp-name">디지털 플랫폼 고도화</h3>
+              <p class="exp-desc">비대면 개인사업자 전용 오픈뱅킹 서비스 기획. 계좌 연결 흐름 및 인증 프로세스 최적화.</p>
+            </div>
+            <div class="exp-role mono">Planner (100%)</div>
+            <div class="exp-arrow">↗</div>
+          </a>
+
+          <a href="#" class="exp-item hover-target fade-up">
+            <div class="exp-year mono">2019-22</div>
+            <div class="exp-details">
+              <h3 class="exp-name">컴퓨존 자사몰 고도화 및 도메인 확장</h3>
+              <p class="exp-desc">자사몰 메인/상세 개편, 검색 알고리즘 고도화. NH오늘농사 리서치 및 전기차 앱 기획.</p>
+            </div>
+            <div class="exp-role mono">Planner (100%)</div>
+            <div class="exp-arrow">↗</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <div class="contact-marquee-wrapper">
+      <div class="contact-marquee marquee-left">
+        <span>HELLO • BONJOUR • HOLA • 안녕하세요 • CIAO • GUTEN TAG • Nǐ Hǎo • MERHABA • NAMASTE •</span>
+        <span>HELLO • BONJOUR • HOLA • 안녕하세요 • CIAO • GUTEN TAG • Nǐ Hǎo • MERHABA • NAMASTE •</span>
+      </div>
+      <div class="contact-marquee marquee-right">
+        <span>SALUT • ALOHA • PRIVET • こんにちは • SAWASDEE • HALLO • OLÀ • HEJ • KAMUSTA •</span>
+        <span>SALUT • ALOHA • PRIVET • こんにちは • SAWASDEE • HALLO • OLÀ • HEJ • KAMUSTA •</span>
+      </div>
+    </div>
+
+    <div class="container fade-up">
+      <h2 class="footer-title serif"><a href="mailto:your-email@example.com" class="hover-target">Let's talk ↗</a></h2>
+    </div>
+    <div class="footer-bottom mono container fade-up">
+      <span>Based in South Korea</span>
+      <span>© <span id="year"></span> Kim Deokyong</span>
+    </div>
+  </footer>
+
+</div> <script>
+'use strict';
+
+// 1. Lenis Smooth Scroll
+const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+requestAnimationFrame(raf);
+
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// 2. Custom Cursor
+const cursor = document.getElementById('cursor');
+let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+let cursorX = mouseX, cursorY = mouseY;
+
+if (window.matchMedia("(pointer: fine)").matches) {
+  window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+  const renderCursor = () => {
+    cursorX += (mouseX - cursorX) * 0.15; cursorY += (mouseY - cursorY) * 0.15;
+    cursor.style.transform = `translate(calc(${cursorX}px - 50%), calc(${cursorY}px - 50%))`;
+    requestAnimationFrame(renderCursor);
+  };
+  requestAnimationFrame(renderCursor);
+
+  document.querySelectorAll('.hover-target, a, button').forEach(target => {
+    target.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    target.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+}
+
+// 3. 네비게이션 테마 변경 로직 (푸터 진입 시)
+const nav = document.getElementById('navbar');
+const contactSection = document.getElementById('contact');
+const menuBtn = document.getElementById('menuBtn');
+const menuOverlay = document.getElementById('menuOverlay');
+
+window.addEventListener('scroll', () => {
+  if (menuOverlay.classList.contains('open')) return; // 메뉴 열렸을 땐 무시
+  const contactRect = contactSection.getBoundingClientRect();
+  if (contactRect.top <= 100) {
+    nav.style.mixBlendMode = "normal";
+    nav.style.color = "#fff";
+  } else {
+    nav.style.mixBlendMode = "difference";
+    nav.style.color = "#fff";
+  }
+});
+
+// 4. [NEW] 메뉴 버튼 클릭 로직
+menuBtn.addEventListener('click', () => {
+  menuOverlay.classList.toggle('open');
+  if (menuOverlay.classList.contains('open')) {
+    menuBtn.textContent = 'CLOSE';
+    nav.style.mixBlendMode = 'normal'; // 오버레이 위에서 글자 보이도록
+  } else {
+    menuBtn.textContent = 'MENU';
+    window.dispatchEvent(new Event('scroll')); // 스크롤 위치에 따라 mix-blend-mode 복구
+  }
+});
+
+// 메뉴 항목 클릭 시 이동 및 닫기
+document.querySelectorAll('.menu-link').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const targetId = link.getAttribute('href');
+    const targetSection = document.querySelector(targetId);
+    
+    menuOverlay.classList.remove('open');
+    menuBtn.textContent = 'MENU';
+    window.dispatchEvent(new Event('scroll')); // 테마 복구
+    
+    lenis.scrollTo(targetSection); // 부드러운 스크롤 이동
+  });
+});
+
+// 5. Scroll Reveal Observer
+const observer = new IntersectionObserver((entries, obs) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      obs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.fade-up, .text-reveal').forEach(el => observer.observe(el));
+
+// 6. [NEW] 인트로 타이밍 제어
+// 점이 커지는 애니메이션(2.4s)이 화면을 덮기 시작할 즈음(약 1.1초 후) 텍스트 등장
+setTimeout(() => {
+  document.querySelectorAll('.hero .text-reveal, .hero .fade-up').forEach(el => el.classList.add('visible'));
+}, 1100); 
+
+</script>
+</body>
+</html>
