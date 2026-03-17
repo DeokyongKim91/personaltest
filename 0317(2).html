@@ -29,7 +29,7 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { font-size: 16px; background-color: var(--ink); }
 body {
-  background-color: var(--bg); color: var(--ink);
+  background-color: var(--ink); color: var(--ink);
   font-family: 'Noto Sans KR', sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden; cursor: none;
@@ -38,54 +38,23 @@ body.on-intro { overflow: hidden; }
 ::selection { background: var(--ink); color: var(--bg); }
 
 /* ══════════════════════════════════════
-    INTRO OVERLAY
+    CINEMATIC INTRO ANIMATION
 ══════════════════════════════════════ */
-#intro-overlay {
-  position: fixed; inset: 0;
-  background-color: var(--ink);
-  z-index: 10000;
-  overflow: hidden; pointer-events: none;
-  transition: opacity 0.6s var(--epo);
+#page-wrapper {
+  background-color: var(--bg); min-height: 100dvh;
+  opacity: 0; transform: scale(1.08); filter: blur(15px);
+  animation: cinematicReveal 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
-
-#water-drop {
-  position: absolute; top: -50px; left: 50%;
-  width: 14px; height: 24px;
-  background-color: var(--bg);
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  transform: translateX(-50%);
-  animation: dropFall 0.8s cubic-bezier(0.5, 0, 1, 1) forwards;
-}
-
-@keyframes dropFall {
-  0%   { top: -50px; transform: translateX(-50%) scaleY(1); }
-  85%  { top: calc(100vh - 24px); transform: translateX(-50%) scaleY(1.1); }
-  95%  { top: calc(100vh - 8px); transform: translateX(-50%) scaleY(0.4) scaleX(2.5); opacity: 1; }
-  100% { top: 100vh; transform: translateX(-50%) scaleY(0) scaleX(4); opacity: 0; }
-}
-
-#splash-circle {
-  position: absolute; bottom: 0; left: 50%;
-  transform: translate(-50%, 50%); 
-  width: 0; height: 0;
-  background-color: var(--bg);
-  border-radius: 50%;
-  animation: splashExpand 1.5s cubic-bezier(0.25, 1, 0.5, 1) 0.75s forwards;
-}
-
-@keyframes splashExpand {
-  0%   { width: 0; height: 0; }
-  100% { width: 300vmax; height: 300vmax; } 
+@keyframes cinematicReveal {
+  100% { opacity: 1; transform: scale(1); filter: blur(0); }
 }
 
 /* ══════════════════════════════════════
     CUSTOM CURSOR
 ══════════════════════════════════════ */
 #cursor {
-  position: fixed; top: 0; left: 0;
-  width: 14px; height: 14px;
-  background-color: #fff;
-  border-radius: 50%; pointer-events: none;
+  position: fixed; top: 0; left: 0; width: 14px; height: 14px;
+  background-color: #fff; border-radius: 50%; pointer-events: none;
   z-index: 9999; transform: translate(-50%, -50%);
   transition: width 0.4s var(--epo), height 0.4s var(--epo);
   mix-blend-mode: difference; 
@@ -103,34 +72,30 @@ body.on-intro { overflow: hidden; }
 .mono { font-family: 'DM Mono', monospace; }
 .poppins { font-family: 'Poppins', sans-serif; }
 
-.text-reveal { 
-  overflow: hidden; display: inline-block; vertical-align: top; 
-  padding-bottom: 24px; margin-bottom: -24px; 
-}
-.text-reveal span { 
-  display: inline-block; transform: translateY(120%) skewY(5deg); 
-  transition: transform 1.2s var(--reveal); 
-}
+.text-reveal { overflow: hidden; display: inline-block; vertical-align: top; padding-bottom: 24px; margin-bottom: -24px; padding-right: 0.2em; margin-right: -0.2em; }
+.text-reveal span { display: inline-block; transform: translateY(120%) skewY(5deg); transition: transform 1.2s var(--reveal); }
 .text-reveal.visible span { transform: translateY(0) skewY(0); }
 
 .fade-up { opacity: 0; transform: translateY(30px); transition: opacity 1s var(--epo), transform 1s var(--epo); }
 .fade-up.visible { opacity: 1; transform: translateY(0); }
 
 /* ══════════════════════════════════════
-    NAVIGATION & FULLSCREEN MENU
+    NAVIGATION
 ══════════════════════════════════════ */
 nav {
   position: fixed; top: 0; left: 0; width: 100%;
   padding: calc(clamp(1.5rem, 3vw, 2rem) + env(safe-area-inset-top, 0px)) clamp(1.5rem, 5vw, 4rem) clamp(1.5rem, 3vw, 2rem);
   display: flex; justify-content: space-between; align-items: center;
   z-index: 500; mix-blend-mode: difference; color: #fff;
-  opacity: 0; animation: fadeInNav 1s 1.5s forwards; 
+  opacity: 0; animation: fadeInNav 1s 0.8s forwards; 
 }
 @keyframes fadeInNav { to { opacity: 1; } }
 
 .logo { font-size: 1rem; letter-spacing: 0.05em; text-decoration: none; color: inherit; text-transform: uppercase; font-weight: 500; }
 .menu-btn { font-size: 0.9rem; text-transform: uppercase; background: none; border: none; color: inherit; font-weight: 500; cursor: none; transition: opacity 0.3s; }
+@media (max-width: 1024px) { .menu-btn { cursor: pointer; } }
 
+/* FULLSCREEN MENU */
 .menu-overlay {
   position: fixed; inset: 0; background-color: var(--ink); color: var(--bg);
   z-index: 400; display: flex; align-items: center; justify-content: center;
@@ -138,11 +103,7 @@ nav {
 }
 .menu-overlay.open { opacity: 1; pointer-events: all; }
 .menu-nav { display: flex; flex-direction: column; gap: 1.5rem; text-align: center; }
-.menu-link { 
-  font-family: 'Noto Serif KR', serif; font-size: clamp(3rem, 8vw, 5rem); 
-  font-weight: 500; text-decoration: none; color: var(--bg); 
-  transition: color 0.3s, transform 0.4s var(--epo); transform: translateY(20px); opacity: 0;
-}
+.menu-link { font-family: 'Noto Serif KR', serif; font-size: clamp(3rem, 8vw, 5rem); font-weight: 500; text-decoration: none; color: var(--bg); transition: color 0.3s, transform 0.4s var(--epo); transform: translateY(20px); opacity: 0; }
 .menu-overlay.open .menu-link { transform: translateY(0); opacity: 1; }
 .menu-link:hover { color: var(--accent); }
 .menu-overlay.open .menu-link:nth-child(1) { transition-delay: 0.1s; }
@@ -153,37 +114,42 @@ nav {
 /* ══════════════════════════════════════
     LAYOUT UTILS
 ══════════════════════════════════════ */
-.container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 clamp(1.5rem, 5vw, 4rem); }
-.section-padding { padding: clamp(6rem, 15vh, 10rem) 0; }
+.container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 clamp(1.2rem, 5vw, 4rem); }
+.section-padding { padding: clamp(5rem, 15vh, 10rem) 0; }
 .sticky-wrapper { display: flex; align-items: flex-start; justify-content: space-between; gap: 4rem; }
 .sticky-header { position: sticky; top: 15vh; width: 35%; flex-shrink: 0; display: flex; flex-direction: column; gap: 1.5rem; }
 .scroll-content { width: 60%; display: flex; flex-direction: column; gap: 4rem; }
 .sec-number { font-size: 2rem; font-weight: 400; line-height: 1; border-bottom: 1px solid var(--ink); padding-bottom: 1rem; display: inline-block; width: 40px; }
-.sec-title { font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; }
+.sec-title { font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; }
 .sec-desc { font-size: 1rem; color: var(--ink-light); line-height: 1.7; font-weight: 300; }
-@media (max-width: 900px) {
-  .sticky-wrapper { flex-direction: column; gap: 3rem; }
-  .sticky-header { position: relative; top: 0; width: 100%; }
-  .scroll-content { width: 100%; }
-  .sec-title { font-size: 2.5rem; }
-}
+@media (max-width: 1024px) { .sticky-wrapper { flex-direction: column; gap: 3rem; } .sticky-header { position: relative; top: 0; width: 100%; } .scroll-content { width: 100%; } .sec-title { font-size: clamp(2.2rem, 8vw, 3rem); } }
 
 /* ══════════════════════════════════════
-    HERO SECTION
+    HERO SECTION (폰트 강렬한 볼드로 복구)
 ══════════════════════════════════════ */
 .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; position: relative; }
 .hero-tag { font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2rem; display: block; font-weight: 500;}
-.hero-headline { font-size: clamp(3.5rem, 9vw, 8rem); font-weight: 500; line-height: 1.05; letter-spacing: -0.03em; max-width: 1200px; }
+
+/* 폰트 Family를 Poppins로 변경, Weight 900, 대문자 처리 */
+.hero-headline { 
+  font-family: 'Poppins', sans-serif; 
+  font-size: clamp(4rem, 12vw, 9rem); 
+  font-weight: 900; 
+  line-height: 1.05; 
+  letter-spacing: -0.03em; 
+  max-width: 1200px; 
+  text-transform: uppercase;
+}
 .hero-headline em { font-style: italic; color: var(--accent); }
 
 /* ══════════════════════════════════════
-    EXPERIENCE
+    EXPERIENCE (Timeline)
 ══════════════════════════════════════ */
 .exp-list { display: flex; flex-direction: column; width: 100%; border-top: 1px solid var(--line); }
 .exp-item {
   position: relative; display: grid; grid-template-columns: 1fr 2.5fr 1.5fr auto; gap: 2rem; align-items: start;
   padding: 3rem 1rem; border-bottom: 1px solid var(--line); text-decoration: none; color: inherit; cursor: none;
-  overflow: hidden; transition: color 0.4s var(--epo), padding 0.5s var(--epo);
+  transition: color 0.4s var(--epo), padding 0.5s var(--epo);
 }
 .exp-item::before {
   content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: var(--ink);
@@ -192,17 +158,19 @@ nav {
 .exp-item:hover { color: var(--bg); padding-left: 2rem; padding-right: 2rem; border-bottom-color: transparent;}
 .exp-item:hover::before { height: 100%; }
 .exp-year { font-size: 1.2rem; font-weight: 500; }
-.exp-details { display: flex; flex-direction: column; gap: 0.8rem; }
+.exp-details { display: flex; flex-direction: column; gap: 0.8rem; pointer-events: none; }
 .exp-name { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.01em; }
 .exp-desc { font-size: 1rem; line-height: 1.6; font-weight: 300; opacity: 0.7; }
-.exp-role { font-size: 1rem; }
+.exp-role { font-size: 1rem; pointer-events: none; }
 .exp-arrow { font-size: 1.8rem; font-weight: 300; transition: transform 0.4s var(--epo); }
 .exp-item:hover .exp-arrow { transform: translate(10px, -10px); }
-@media (max-width: 900px) {
-  .exp-item { grid-template-columns: 1fr; gap: 1rem; padding: 2rem 0; }
-  .exp-item:hover { padding-left: 1rem; padding-right: 1rem; }
-  .exp-year { margin-bottom: -0.5rem; }
-  .exp-arrow { display: none; }
+@media (max-width: 1024px) { 
+  .exp-item { grid-template-columns: 1fr; gap: 1rem; padding: 2.5rem 0; cursor: pointer; } 
+  .exp-item:hover { padding-left: 1rem; padding-right: 1rem; } 
+  .exp-year { margin-bottom: -0.5rem; font-size: 1rem; color: var(--accent); } 
+  .exp-name { font-size: 1.4rem; }
+  .exp-role { font-size: 0.95rem; opacity: 0.7;}
+  .exp-arrow { display: none; } 
 }
 
 /* ══════════════════════════════════════
@@ -217,103 +185,68 @@ nav {
 .srv-tags { display: flex; gap: 0.8rem; flex-wrap: wrap; }
 .srv-tag { font-size: 0.8rem; padding: 0.4rem 0.8rem; border: 1px solid var(--line); border-radius: 40px; text-transform: uppercase; letter-spacing: 0.05em; }
 
+@media (max-width: 1024px) {
+  .srv-list { gap: 3rem; }
+  .srv-head { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .srv-title { font-size: 1.8rem; }
+}
+
 /* ══════════════════════════════════════
     MARQUEE DIVIDER
 ══════════════════════════════════════ */
-.marquee-divider { width: 100%; padding: 4rem 0; background: var(--ink); color: var(--bg); overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
-.marquee-inner-div { display: flex; animation: marquee-left 25s linear infinite; font-size: 4vw; font-weight: 500; text-transform: uppercase; }
+.marquee-divider { width: 100%; padding: 3rem 0; background: var(--ink); color: var(--bg); overflow: hidden; white-space: nowrap; display: flex; align-items: center; }
+.marquee-inner-div { display: flex; animation: marquee-left 25s linear infinite; font-size: clamp(2rem, 4vw, 4rem); font-weight: 500; text-transform: uppercase; }
 .marquee-inner-div span { padding-right: 3rem; display: flex; align-items: center; gap: 3rem; }
 
 /* ══════════════════════════════════════
-    FOOTER / CONTACT (상하 마진 재조정 완료)
+    FOOTER / CONTACT
 ══════════════════════════════════════ */
-footer { 
-  position: relative; 
-  min-height: 75vh; /* 화면의 75%를 채우도록 설정 */
-  display: flex; flex-direction: column; 
-  background: var(--ink); color: var(--bg); 
-  text-align: center; overflow: hidden; 
-}
-
-/* 배경 전광판을 푸터의 정확한 50% 세로 중앙에 위치 */
-.contact-marquee-wrapper { 
-  position: absolute; top: 50%; left: 0; width: 100%; 
-  transform: translateY(-50%); 
-  display: flex; flex-direction: column; gap: 1.5rem; 
-  pointer-events: none; opacity: 0.15; z-index: 1; 
-}
-.contact-marquee { display: flex; white-space: nowrap; font-family: 'Poppins', sans-serif; font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; text-transform: uppercase; color: transparent; -webkit-text-stroke: 1.5px var(--bg); }
+footer { position: relative; min-height: 75vh; display: flex; flex-direction: column; background: var(--ink); color: var(--bg); text-align: center; overflow: hidden; }
+.contact-marquee-wrapper { position: absolute; top: 50%; left: 0; width: 100%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 1.5rem; pointer-events: none; opacity: 0.15; z-index: 1; }
+.contact-marquee { display: flex; white-space: nowrap; font-family: 'Poppins', sans-serif; font-size: clamp(3rem, 12vw, 6rem); font-weight: 900; text-transform: uppercase; color: transparent; -webkit-text-stroke: 1.5px var(--bg); }
 .contact-marquee span { padding-right: 2rem; display: flex; gap: 2rem; }
 .marquee-left { animation: marquee-left 35s linear infinite; }
 .marquee-right { animation: marquee-right 35s linear infinite; }
 @keyframes marquee-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 @keyframes marquee-right { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
 
-/* Let's talk 텍스트를 감싸는 컨테이너를 Flex:1로 설정하여 정확히 중앙에 배치 */
-footer > .container:not(.footer-bottom) {
-  flex: 1;
-  display: flex; align-items: center; justify-content: center;
-}
-
-.footer-title { 
-  position: relative; z-index: 2; 
-  font-size: clamp(3.5rem, 12vw, 9rem); font-weight: 700; 
-  margin: 0; /* 기존 하단 마진 제거하여 수학적 정중앙 정렬 확보 */
-  letter-spacing: -0.02em; 
-}
+footer > .container:not(.footer-bottom) { flex: 1; display: flex; align-items: center; justify-content: center; }
+.footer-title { position: relative; z-index: 2; font-size: clamp(3.5rem, 12vw, 9rem); font-weight: 700; margin: 0; letter-spacing: -0.02em; }
 .footer-title a { color: var(--bg); text-decoration: none; position: relative; }
 .footer-title a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: clamp(2px, 0.5vw, 6px); background: var(--bg); transform: scaleX(0); transform-origin: right; transition: transform 0.5s var(--epo); }
 .footer-title a:hover::after { transform: scaleX(1); transform-origin: left; }
-
-.footer-bottom { 
-  position: relative; z-index: 2; 
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 2rem clamp(1.5rem, 5vw, 4rem); border-top: 1px solid rgba(255,255,255,0.15); 
-  font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.6); 
-  width: 100%; max-width: 1400px; margin: 0 auto;
-}
-@media (max-width: 640px) { 
-  .footer-bottom { flex-direction: column; gap: 1rem; padding-bottom: 2rem; } 
-}
+.footer-bottom { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding: 2rem clamp(1.2rem, 5vw, 4rem); border-top: 1px solid rgba(255,255,255,0.15); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.6); width: 100%; max-width: 1400px; margin: 0 auto; }
+@media (max-width: 640px) { .footer-bottom { flex-direction: column; gap: 1rem; padding-bottom: 2rem; } }
 
 /* ══════════════════════════════════════
-    PROJECT DETAIL OVERLAY (상세페이지)
+    PROJECT DETAIL (심리스 팽창 효과)
 ══════════════════════════════════════ */
 .project-detail-overlay {
   position: fixed; inset: 0; background: var(--bg); color: var(--ink);
-  z-index: 800; overflow-y: auto; overflow-x: hidden;
-  transform: translateY(100%); 
-  transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+  z-index: 800; visibility: hidden; opacity: 0;
+}
+.project-detail-overlay.open { visibility: visible; opacity: 1; }
+
+.pd-scroll-area {
+  height: 100dvh; overflow-y: auto; overflow-x: hidden;
+  opacity: 0; transition: opacity 0.4s ease 0.3s;
   scrollbar-width: none; 
 }
-.project-detail-overlay::-webkit-scrollbar { display: none; } 
-.project-detail-overlay.open { transform: translateY(0); }
+.pd-scroll-area::-webkit-scrollbar { display: none; }
+.pd-scroll-area.show-content { opacity: 1; }
 
-.pd-header {
-  position: sticky; top: 0; width: 100%;
-  padding: calc(clamp(1.5rem, 3vw, 2rem) + env(safe-area-inset-top, 0px)) clamp(1.5rem, 5vw, 4rem) clamp(1.5rem, 3vw, 2rem);
-  display: flex; justify-content: flex-end; align-items: center;
-  z-index: 10; mix-blend-mode: difference; color: #fff; pointer-events: none;
-}
-.pd-close-btn {
-  font-size: 0.9rem; text-transform: uppercase; background: none; border: none; 
-  color: inherit; font-weight: 500; cursor: none; pointer-events: all;
-  display: flex; align-items: center; gap: 0.5rem; transition: transform 0.3s var(--epo);
-}
+.pd-header { position: sticky; top: 0; width: 100%; padding: calc(clamp(1.5rem, 3vw, 2rem) + env(safe-area-inset-top, 0px)) clamp(1.5rem, 5vw, 4rem) clamp(1.5rem, 3vw, 2rem); display: flex; justify-content: flex-end; align-items: center; z-index: 10; mix-blend-mode: difference; color: #fff; pointer-events: none; }
+.pd-close-btn { font-size: 0.9rem; text-transform: uppercase; background: none; border: none; color: inherit; font-weight: 500; cursor: none; pointer-events: all; display: flex; align-items: center; gap: 0.5rem; transition: transform 0.3s var(--epo); }
 .pd-close-btn:hover { transform: translateX(-5px); }
+@media (max-width: 1024px) { .pd-close-btn { cursor: pointer; } }
 
-.pd-content { padding: 4rem clamp(1.5rem, 5vw, 4rem) 8rem; max-width: 1400px; margin: 0 auto; width: 100%; }
-.pd-hero-title { font-size: clamp(3rem, 7vw, 6rem); font-weight: 700; line-height: 1.1; margin-bottom: 4rem; letter-spacing: -0.02em; }
+.pd-content { padding: 4rem clamp(1.2rem, 5vw, 4rem) 8rem; max-width: 1400px; margin: 0 auto; width: 100%; }
+.pd-hero-title { font-size: clamp(2.5rem, 7vw, 6rem); font-weight: 700; line-height: 1.1; margin-bottom: 3rem; letter-spacing: -0.02em; }
 
-.pd-meta-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;
-  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-  padding: 2rem 0; margin-bottom: 4rem;
-}
+.pd-meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 2rem 0; margin-bottom: 4rem; }
 .pd-meta-item { display: flex; flex-direction: column; gap: 0.5rem; }
 .pd-meta-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-light); }
 .pd-meta-value { font-size: 1.1rem; font-weight: 500; }
-
 @media (max-width: 768px) { .pd-meta-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; padding: 1.5rem 0; } }
 
 .pd-cover-img { width: 100%; height: 60vh; object-fit: cover; border-radius: 4px; margin-bottom: 4rem; background: #ddd; }
@@ -326,11 +259,6 @@ footer > .container:not(.footer-bottom) {
 </style>
 </head>
 <body class="on-intro">
-
-<div id="intro-overlay">
-  <div id="water-drop"></div>
-  <div id="splash-circle"></div>
-</div>
 
 <div id="cursor"></div>
 
@@ -349,10 +277,9 @@ footer > .container:not(.footer-bottom) {
 </div>
 
 <div id="page-wrapper">
-  
   <section class="hero container" id="main">
     <span class="hero-tag mono fade-up">Service Planner & Project Leader</span>
-    <h1 class="hero-headline serif">
+    <h1 class="hero-headline poppins">
       <span class="text-reveal"><span>Making</span></span><br>
       <span class="text-reveal"><span><em>ideas</em></span></span><br>
       <span class="text-reveal"><span>visible.</span></span>
@@ -364,29 +291,28 @@ footer > .container:not(.footer-bottom) {
       <div class="sticky-header fade-up">
         <span class="sec-number serif">01</span>
         <h2 class="sec-title serif">Service<br>Expertise</h2>
-        <p class="sec-desc">화려한 겉모습보다 서비스가 오랫동안 견고하게 작동하도록 만드는 뼈대와 정책 설계에 집착합니다.</p>
+        <p class="sec-desc">표면적인 디자인을 넘어, 엣지 케이스를 통제하고 시스템의 안정성을 담보하는 견고한 UI/UX 뼈대와 정책 설계에 집중합니다.</p>
       </div>
-      
       <div class="scroll-content">
         <div class="srv-list">
           <div class="srv-item fade-up">
             <div class="srv-head"><h3 class="srv-title serif">Service Planning</h3><span class="srv-num mono">1/4</span></div>
-            <p class="srv-desc">비즈니스 요구사항 분석, 플로우 정의 및 화면 설계 수행.</p>
+            <p class="srv-desc">비즈니스 목표와 사용자 니즈를 조율하는 최적의 서비스 플로우 설계.</p>
             <div class="srv-tags mono"><span class="srv-tag">Requirement Analysis</span><span class="srv-tag">Flow Design</span></div>
           </div>
           <div class="srv-item fade-up">
-            <div class="srv-head"><h3 class="srv-title serif">UI/UX Design</h3><span class="srv-num mono">2/4</span></div>
-            <p class="srv-desc">단순 심미성을 넘어 엣지 케이스와 예외 상황을 고려한 인터페이스 정책 수립.</p>
+            <div class="srv-head"><h3 class="srv-title serif">UI/UX Planning</h3><span class="srv-num mono">2/4</span></div>
+            <p class="srv-desc">예외 상황과 엣지 케이스까지 완벽하게 통제하는 정교한 인터페이스 정책 수립.</p>
             <div class="srv-tags mono"><span class="srv-tag">Interface Policy</span><span class="srv-tag">Prototyping</span></div>
           </div>
           <div class="srv-item fade-up">
             <div class="srv-head"><h3 class="srv-title serif">Project Leading</h3><span class="srv-num mono">3/4</span></div>
-            <p class="srv-desc">이해관계자 커뮤니케이션 조율, 일정 및 배포 리스크 관리 완수.</p>
+            <p class="srv-desc">이해관계자 간의 틈을 메우고, 일정과 리스크를 철저히 관리하여 프로젝트 성공 견인.</p>
             <div class="srv-tags mono"><span class="srv-tag">Schedule Management</span><span class="srv-tag">Communication</span></div>
           </div>
           <div class="srv-item fade-up">
             <div class="srv-head"><h3 class="srv-title serif">Research</h3><span class="srv-num mono">4/4</span></div>
-            <p class="srv-desc">현장 방문 인터뷰 및 데이터 기반의 리서치를 통해 진짜 문제를 정의하고 개선안을 도출합니다.</p>
+            <p class="srv-desc">현장 방문 인터뷰 및 데이터 기반의 리서치를 통해 진짜 문제를 정의하고 개선안 도출.</p>
             <div class="srv-tags mono"><span class="srv-tag">User Interview</span><span class="srv-tag">Data Insight</span></div>
           </div>
         </div>
@@ -396,8 +322,8 @@ footer > .container:not(.footer-bottom) {
 
   <div class="marquee-divider poppins">
     <div class="marquee-inner-div">
-      <span>UI/UX Service Planner • NH Next-Gen PL • Digital Platform • Creative Problem Solver •</span>
-      <span>UI/UX Service Planner • NH Next-Gen PL • Digital Platform • Creative Problem Solver •</span>
+      <span>UI/UX SERVICE PLANNER • NH NEXT-GEN PL • DIGITAL PLATFORM • CREATIVE PROBLEM SOLVER •</span>
+      <span>UI/UX SERVICE PLANNER • NH NEXT-GEN PL • DIGITAL PLATFORM • CREATIVE PROBLEM SOLVER •</span>
     </div>
   </div>
 
@@ -406,64 +332,35 @@ footer > .container:not(.footer-bottom) {
       <div class="sticky-header fade-up">
         <span class="sec-number serif">02</span>
         <h2 class="sec-title serif">Selected<br>History</h2>
-        <p class="sec-desc">금융 SI 및 커머스 플랫폼 고도화 프로젝트의 핵심 수행 이력 요약. 각 항목을 클릭하여 상세 내용을 확인하세요.</p>
+        <p class="sec-desc">금융 SI 및 커머스 플랫폼 고도화 프로젝트의 핵심 수행 이력 요약. 각 항목을 클릭하여 상세 내용을 확인 가능합니다.</p>
       </div>
       
       <div class="scroll-content">
         <div class="exp-list">
-          <a href="#" class="exp-item hover-target fade-up" 
-             data-title="NH기업뱅킹 도급운영 총괄" data-role="총괄 PL" data-year="2026" data-client="NH Bank">
+          <a href="#" class="exp-item hover-target fade-up" data-title="NH기업뱅킹 도급운영 총괄" data-role="총괄 PL" data-year="2026" data-client="NH Bank">
             <div class="exp-year mono">2026</div>
-            <div class="exp-details">
-              <h3 class="exp-name">NH기업뱅킹 도급운영 총괄</h3>
-              <p class="exp-desc">운영 기간 전체 일정 관리, 요구사항 사전 협의, 배포 관리 및 운영 전반 총괄 수행.</p>
-            </div>
-            <div class="exp-role mono">PL (100%)</div>
-            <div class="exp-arrow">↗</div>
+            <div class="exp-details"><h3 class="exp-name">NH기업뱅킹 도급운영 총괄</h3><p class="exp-desc">요구사항 분석부터 배포까지, 운영 주기 전반의 일정 및 리스크 관리 총괄.</p></div>
+            <div class="exp-role mono">PL (100%)</div><div class="exp-arrow">↗</div>
           </a>
-          
-          <a href="#" class="exp-item hover-target fade-up"
-             data-title="비대면 신규가입 & 전자약정 기획" data-role="Service Planner" data-year="2025" data-client="NH Bank">
+          <a href="#" class="exp-item hover-target fade-up" data-title="비대면 신규가입 & 전자약정 기획" data-role="Service Planner" data-year="2025" data-client="NH Bank">
             <div class="exp-year mono">2025</div>
-            <div class="exp-details">
-              <h3 class="exp-name">비대면 신규가입 & 전자약정 기획</h3>
-              <p class="exp-desc">비대면 개인/법인 여신 전자약정 프로세스 설계 및 법인 전자금융 신규 가입 플로우 기획 완료.</p>
-            </div>
-            <div class="exp-role mono">Planner (100%)</div>
-            <div class="exp-arrow">↗</div>
+            <div class="exp-details"><h3 class="exp-name">비대면 신규가입 & 전자약정 기획</h3><p class="exp-desc">개인/법인 여신 전자약정 및 비대면 입출금 계좌 신규 가입 플로우 전체 설계.</p></div>
+            <div class="exp-role mono">Planner (100%)</div><div class="exp-arrow">↗</div>
           </a>
-
-          <a href="#" class="exp-item hover-target fade-up"
-             data-title="NH기업뱅킹 차세대 구축" data-role="UI/UX Planner" data-year="2024" data-client="NH Bank">
+          <a href="#" class="exp-item hover-target fade-up" data-title="NH기업뱅킹 차세대 구축" data-role="UI/UX Planner" data-year="2024" data-client="NH Bank">
             <div class="exp-year mono">2024</div>
-            <div class="exp-details">
-              <h3 class="exp-name">NH기업뱅킹 차세대 구축</h3>
-              <p class="exp-desc">조회·이체 전반 UIUX 개편, 금융 허브 연계 기획, 입출금 알림 PUSH 서비스 개선.</p>
-            </div>
-            <div class="exp-role mono">Planner (100%)</div>
-            <div class="exp-arrow">↗</div>
+            <div class="exp-details"><h3 class="exp-name">NH기업뱅킹 차세대 구축</h3><p class="exp-desc">조회·이체 전반 UIUX 개편, 금융 허브 연계 기획 및 입출금 알림 PUSH 서비스 개선.</p></div>
+            <div class="exp-role mono">Planner (100%)</div><div class="exp-arrow">↗</div>
           </a>
-
-          <a href="#" class="exp-item hover-target fade-up"
-             data-title="디지털 플랫폼 고도화" data-role="Service Planner" data-year="2023" data-client="Financial Sector">
+          <a href="#" class="exp-item hover-target fade-up" data-title="디지털 플랫폼 고도화" data-role="Service Planner" data-year="2023" data-client="Financial Sector">
             <div class="exp-year mono">2023</div>
-            <div class="exp-details">
-              <h3 class="exp-name">디지털 플랫폼 고도화</h3>
-              <p class="exp-desc">비대면 개인사업자 전용 오픈뱅킹 서비스 기획. 계좌 연결 흐름 및 인증 프로세스 최적화.</p>
-            </div>
-            <div class="exp-role mono">Planner (100%)</div>
-            <div class="exp-arrow">↗</div>
+            <div class="exp-details"><h3 class="exp-name">디지털 플랫폼 고도화</h3><p class="exp-desc">비대면 개인사업자 전용 오픈뱅킹 기획. 계좌 연결 흐름 및 인증 프로세스 최적화.</p></div>
+            <div class="exp-role mono">Planner (100%)</div><div class="exp-arrow">↗</div>
           </a>
-
-          <a href="#" class="exp-item hover-target fade-up"
-             data-title="컴퓨존 자사몰 고도화 및 도메인 확장" data-role="Web/App Planner" data-year="2019-22" data-client="Compuzone & others">
+          <a href="#" class="exp-item hover-target fade-up" data-title="컴퓨존 자사몰 고도화 및 도메인 확장" data-role="Web/App Planner" data-year="2019-22" data-client="Compuzone & others">
             <div class="exp-year mono">2019-22</div>
-            <div class="exp-details">
-              <h3 class="exp-name">컴퓨존 자사몰 고도화 및 도메인 확장</h3>
-              <p class="exp-desc">자사몰 메인/상세 개편, 검색 알고리즘 고도화. NH오늘농사 리서치 및 전기차 앱 기획.</p>
-            </div>
-            <div class="exp-role mono">Planner (100%)</div>
-            <div class="exp-arrow">↗</div>
+            <div class="exp-details"><h3 class="exp-name">컴퓨존 자사몰 고도화 및 도메인 확장</h3><p class="exp-desc">자사몰 메인/상세 개편, 검색 알고리즘 고도화. NH오늘농사 리서치 및 전기차 앱 기획.</p></div>
+            <div class="exp-role mono">Planner (100%)</div><div class="exp-arrow">↗</div>
           </a>
         </div>
       </div>
@@ -481,64 +378,53 @@ footer > .container:not(.footer-bottom) {
         <span>SALUT • ALOHA • PRIVET • こんにちは • SAWASDEE • HALLO • OLÀ • HEJ • KAMUSTA •</span>
       </div>
     </div>
-
     <div class="container fade-up">
       <h2 class="footer-title serif"><a href="mailto:your-email@example.com" class="hover-target">Let's talk ↗</a></h2>
     </div>
-
     <div class="footer-bottom mono container fade-up">
       <span>Based in South Korea</span>
       <span>© <span id="year"></span> Kim Deokyong</span>
     </div>
   </footer>
+</div> 
 
-</div> <div id="project-detail" class="project-detail-overlay">
-  <div class="pd-header">
-    <button id="pd-close" class="pd-close-btn mono hover-target">← Back to List</button>
-  </div>
-  
-  <div class="pd-content">
-    <h1 class="pd-hero-title serif" id="pd-title">Project Title Placeholder</h1>
+<div id="project-detail" class="project-detail-overlay">
+  <div id="pd-scroll-area" class="pd-scroll-area">
+    <div class="pd-header">
+      <button id="pd-close" class="pd-close-btn mono hover-target">← Back to List</button>
+    </div>
     
-    <div class="pd-meta-grid mono">
-      <div class="pd-meta-item">
-        <span class="pd-meta-label">Role</span>
-        <span class="pd-meta-value" id="pd-role">Project Leader</span>
+    <div class="pd-content">
+      <h1 class="pd-hero-title serif" id="pd-title">Project Title Placeholder</h1>
+      
+      <div class="pd-meta-grid mono">
+        <div class="pd-meta-item"><span class="pd-meta-label">Role</span><span class="pd-meta-value" id="pd-role">Project Leader</span></div>
+        <div class="pd-meta-item"><span class="pd-meta-label">Year</span><span class="pd-meta-value" id="pd-year">2026</span></div>
+        <div class="pd-meta-item"><span class="pd-meta-label">Client</span><span class="pd-meta-value" id="pd-client">NH Bank</span></div>
+        <div class="pd-meta-item"><span class="pd-meta-label">Discipline</span><span class="pd-meta-value">UI/UX Planning</span></div>
       </div>
-      <div class="pd-meta-item">
-        <span class="pd-meta-label">Year</span>
-        <span class="pd-meta-value" id="pd-year">2026</span>
-      </div>
-      <div class="pd-meta-item">
-        <span class="pd-meta-label">Client</span>
-        <span class="pd-meta-value" id="pd-client">NH Bank</span>
-      </div>
-      <div class="pd-meta-item">
-        <span class="pd-meta-label">Discipline</span>
-        <span class="pd-meta-value">UI/UX Planning</span>
-      </div>
-    </div>
 
-    <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2000&auto=format&fit=crop" class="pd-cover-img" alt="Project Cover">
+      <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2000&auto=format&fit=crop" class="pd-cover-img" alt="Project Cover">
 
-    <div class="pd-body-grid">
-      <h2 class="pd-section-title serif">Overview</h2>
-      <div class="pd-text">
-        <p>해당 프로젝트의 상세 기획 과정과 해결책을 서술하는 영역입니다. 이 부분은 추후 본인의 실제 포트폴리오 기재 내용으로 자유롭게 수정하실 수 있습니다.</p>
-        <p>복잡한 금융 시스템의 요구사항을 분석하고, 사용자가 직면하는 마찰(Friction)을 최소화하기 위한 UI/UX 정책을 수립했습니다.</p>
+      <div class="pd-body-grid">
+        <h2 class="pd-section-title serif">Overview</h2>
+        <div class="pd-text">
+          <p>해당 프로젝트의 상세 기획 과정과 해결책을 서술하는 영역입니다. 이 부분은 추후 본인의 실제 포트폴리오 기재 내용으로 자유롭게 수정하실 수 있습니다.</p>
+          <p>표면적인 UI 구성을 넘어, 백엔드 데이터의 흐름과 예외 케이스를 완벽하게 통제하는 사용자 플로우를 설계했습니다.</p>
+        </div>
       </div>
-    </div>
 
-    <div class="pd-body-grid">
-      <h2 class="pd-section-title serif">Approach</h2>
-      <div class="pd-text">
-        <p>단순한 화면 구성을 넘어, 백엔드 데이터의 흐름과 예외 케이스를 완벽하게 통제하는 플로우를 설계했습니다.</p>
+      <div class="pd-body-grid">
+        <h2 class="pd-section-title serif">Approach</h2>
+        <div class="pd-text">
+          <p>복잡한 금융 시스템의 요구사항을 분석하고, 사용자가 직면하는 마찰(Friction)을 최소화하기 위한 UI/UX 정책을 수립했습니다.</p>
+        </div>
       </div>
-    </div>
 
-    <div class="pd-image-stack">
-      <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1600&auto=format&fit=crop" loading="lazy" alt="Project Screen 1">
-      <img src="https://images.unsplash.com/photo-1542744094-3a31f272c490?q=80&w=1600&auto=format&fit=crop" loading="lazy" alt="Project Screen 2">
+      <div class="pd-image-stack">
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1600&auto=format&fit=crop" loading="lazy" alt="Project Screen 1">
+        <img src="https://images.unsplash.com/photo-1542744094-3a31f272c490?q=80&w=1600&auto=format&fit=crop" loading="lazy" alt="Project Screen 2">
+      </div>
     </div>
   </div>
 </div>
@@ -546,34 +432,26 @@ footer > .container:not(.footer-bottom) {
 <script>
 'use strict';
 
-// 1. Lenis Smooth Scroll
 const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
 function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
 requestAnimationFrame(raf);
-
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// 2. Custom Cursor
+// 커서 & 호버 로직
 const cursor = document.getElementById('cursor');
 let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
 let cursorX = mouseX, cursorY = mouseY;
-
 if (window.matchMedia("(pointer: fine)").matches) {
   window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
-  const renderCursor = () => {
-    cursorX += (mouseX - cursorX) * 0.15; cursorY += (mouseY - cursorY) * 0.15;
-    cursor.style.transform = `translate(calc(${cursorX}px - 50%), calc(${cursorY}px - 50%))`;
-    requestAnimationFrame(renderCursor);
-  };
+  const renderCursor = () => { cursorX += (mouseX - cursorX) * 0.15; cursorY += (mouseY - cursorY) * 0.15; cursor.style.transform = `translate(calc(${cursorX}px - 50%), calc(${cursorY}px - 50%))`; requestAnimationFrame(renderCursor); };
   requestAnimationFrame(renderCursor);
-
   document.querySelectorAll('.hover-target, a, button').forEach(target => {
     target.addEventListener('mouseenter', () => cursor.classList.add('hover'));
     target.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
   });
 }
 
-// 3. 네비게이션 테마 변경
+// 네비게이션 테마 제어
 const nav = document.getElementById('navbar');
 const contactSection = document.getElementById('contact');
 const menuBtn = document.getElementById('menuBtn');
@@ -583,97 +461,84 @@ const body = document.body;
 
 window.addEventListener('scroll', () => {
   if (menuOverlay.classList.contains('open') || body.classList.contains('on-intro') || pdOverlay.classList.contains('open')) return; 
-  const contactRect = contactSection.getBoundingClientRect();
-  if (contactRect.top <= 100) { nav.style.mixBlendMode = "normal"; nav.style.color = "#fff"; } 
+  if (contactSection.getBoundingClientRect().top <= 100) { nav.style.mixBlendMode = "normal"; nav.style.color = "#fff"; } 
   else { nav.style.mixBlendMode = "difference"; nav.style.color = "#fff"; }
 });
 
 menuBtn.addEventListener('click', () => {
   menuOverlay.classList.toggle('open');
-  if (menuOverlay.classList.contains('open')) {
-    menuBtn.textContent = 'CLOSE';
-    nav.style.mixBlendMode = 'normal'; nav.style.color = "#fff";
-  } else {
-    menuBtn.textContent = 'MENU';
-    const contactRect = contactSection.getBoundingClientRect();
-    if (contactRect.top <= 100) { nav.style.mixBlendMode = "normal"; } else { nav.style.mixBlendMode = "difference"; }
-  }
+  if (menuOverlay.classList.contains('open')) { menuBtn.textContent = 'CLOSE'; nav.style.mixBlendMode = 'normal'; nav.style.color = "#fff"; } 
+  else { menuBtn.textContent = 'MENU'; if (contactSection.getBoundingClientRect().top <= 100) { nav.style.mixBlendMode = "normal"; } else { nav.style.mixBlendMode = "difference"; } }
 });
 
 document.querySelectorAll('.menu-link').forEach(link => {
   link.addEventListener('click', (e) => {
     e.preventDefault();
-    const targetSection = document.querySelector(link.getAttribute('href'));
-    menuOverlay.classList.remove('open');
-    menuBtn.textContent = 'MENU';
-    lenis.scrollTo(targetSection);
+    menuOverlay.classList.remove('open'); menuBtn.textContent = 'MENU';
+    if (contactSection.getBoundingClientRect().top <= 100) { nav.style.mixBlendMode = "normal"; } else { nav.style.mixBlendMode = "difference"; }
+    lenis.scrollTo(document.querySelector(link.getAttribute('href')));
   });
 });
 
-// 4. Scroll Reveal Observer
+// Scroll Reveal
 const observer = new IntersectionObserver((entries, obs) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      obs.unobserve(entry.target);
-    }
-  });
+  entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); obs.unobserve(entry.target); } });
 }, { threshold: 0.15 });
-
 document.querySelectorAll('.fade-up, .text-reveal').forEach(el => observer.observe(el));
 
-// 5. 인트로 애니메이션 로직
+// 시네마틱 인트로
 document.addEventListener('DOMContentLoaded', () => {
   lenis.stop(); 
-  
-  setTimeout(() => {
-    document.querySelectorAll('.hero .text-reveal, .hero .fade-up').forEach(el => el.classList.add('visible'));
-  }, 1300);
-
-  setTimeout(() => {
-    const introOverlay = document.getElementById('intro-overlay');
-    introOverlay.style.opacity = '0';
-    
-    setTimeout(() => {
-      introOverlay.style.display = 'none';
-      body.classList.remove('on-intro');
-      lenis.start(); 
-    }, 600); 
-  }, 2400);
+  setTimeout(() => { document.querySelectorAll('.hero .text-reveal, .hero .fade-up').forEach(el => el.classList.add('visible')); }, 600);
+  setTimeout(() => { body.classList.remove('on-intro'); lenis.start(); }, 1500);
 });
 
-// 6. 프로젝트 상세 페이지(Overlay) 로직
+// 심리스 팽창 (Shared Element Expansion) 로직
 const expItems = document.querySelectorAll('.exp-item');
 const pdClose = document.getElementById('pd-close');
-
-const pdTitle = document.getElementById('pd-title');
-const pdRole = document.getElementById('pd-role');
-const pdYear = document.getElementById('pd-year');
-const pdClient = document.getElementById('pd-client');
+const pdScroll = document.getElementById('pd-scroll-area');
+let lastRect = null;
 
 expItems.forEach(item => {
   item.addEventListener('click', (e) => {
     e.preventDefault();
-    pdTitle.textContent = item.getAttribute('data-title');
-    pdRole.textContent = item.getAttribute('data-role');
-    pdYear.textContent = item.getAttribute('data-year');
-    pdClient.textContent = item.getAttribute('data-client');
+    document.getElementById('pd-title').textContent = item.getAttribute('data-title');
+    document.getElementById('pd-role').textContent = item.getAttribute('data-role');
+    document.getElementById('pd-year').textContent = item.getAttribute('data-year');
+    document.getElementById('pd-client').textContent = item.getAttribute('data-client');
     
+    lastRect = item.getBoundingClientRect();
+    const w = document.documentElement.clientWidth;
+    const h = window.innerHeight;
+    
+    pdOverlay.style.transition = 'none';
+    pdOverlay.style.clipPath = `inset(${lastRect.top}px ${w - lastRect.right}px ${h - lastRect.bottom}px ${lastRect.left}px round 8px)`;
     pdOverlay.classList.add('open');
-    pdOverlay.scrollTo(0, 0);
-    lenis.stop();
+    pdScroll.scrollTo(0, 0); 
     
-    nav.style.opacity = '0';
-    nav.style.pointerEvents = 'none';
+    void pdOverlay.offsetWidth;
+    
+    pdOverlay.style.transition = 'clip-path 0.7s cubic-bezier(0.77, 0, 0.175, 1)';
+    pdOverlay.style.clipPath = 'inset(0px 0px 0px 0px round 0px)';
+    
+    pdScroll.classList.add('show-content');
+    lenis.stop(); 
+    nav.style.opacity = '0'; nav.style.pointerEvents = 'none';
   });
 });
 
 pdClose.addEventListener('click', () => {
-  pdOverlay.classList.remove('open');
-  lenis.start();
+  const w = document.documentElement.clientWidth;
+  const h = window.innerHeight;
   
-  nav.style.opacity = '1';
-  nav.style.pointerEvents = 'auto';
+  pdScroll.classList.remove('show-content');
+  pdOverlay.style.clipPath = `inset(${lastRect.top}px ${w - lastRect.right}px ${h - lastRect.bottom}px ${lastRect.left}px round 8px)`;
+  
+  setTimeout(() => {
+    pdOverlay.classList.remove('open');
+    lenis.start(); 
+    nav.style.opacity = '1'; nav.style.pointerEvents = 'auto';
+  }, 700);
 });
 </script>
 </body>
