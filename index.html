@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#111111">
-<title>kdyPortfolio</title>
-<link rel="icon" href="./images/favicon.png" type="image/png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<title>김덕용 포트폴리오</title>
+
+<link rel="icon" href="./favicon.png" type="image/png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;800;900&family=Noto+Serif+KR:wght@400;500;700&family=Noto+Sans+KR:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -22,7 +23,8 @@
   --line: rgba(17, 17, 17, 0.15);
   --epo: cubic-bezier(0.16, 1, 0.3, 1);
   --reveal: cubic-bezier(0.77, 0, 0.175, 1);
-  --pad-x: max(1.5rem, 5vw);
+  /* [NEW FIX] 바닥화면과 상세화면 전체에 적용될 균일한 좌우 여백 토큰 */
+  --pad-x: max(1.5rem, 5vw); 
 }
 
 /* ══════════════════════════════════════
@@ -72,7 +74,13 @@ body.is-touch a, body.is-touch button { cursor: pointer !important; }
 /* ══════════════════════════════════════
     LAYOUT UTILS
 ══════════════════════════════════════ */
-.container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 var(--pad-x); box-sizing: border-box; }
+/* [NEW FIX] 바닥화면 전체 콘텐츠 정렬을 위한 이너 컨테이너 정의 */
+.inner-container {
+  width: 100%; max-width: 1400px; margin: 0 auto;
+  padding: 0 var(--pad-x); /* 통일된 좌우 여백 적용 */
+  box-sizing: border-box;
+}
+
 .section-padding { padding: clamp(6rem, 15vh, 10rem) 0; }
 .sticky-wrapper { display: flex; align-items: flex-start; justify-content: space-between; gap: 4rem; width: 100%; }
 .sticky-header { position: sticky; top: 15vh; width: 35%; flex-shrink: 0; display: flex; flex-direction: column; gap: 1.5rem; }
@@ -85,8 +93,17 @@ body.is-touch a, body.is-touch button { cursor: pointer !important; }
 /* ══════════════════════════════════════
     NAVIGATION
 ══════════════════════════════════════ */
-nav { position: fixed; top: 0; left: 0; width: 100%; padding: calc(1.5rem + env(safe-area-inset-top, 0px)) var(--pad-x) 1.5rem; display: flex; justify-content: space-between; align-items: center; z-index: 500; mix-blend-mode: difference; color: #fff; opacity: 0; animation: fadeInNav 1s 0.8s forwards; pointer-events: none; }
+nav {
+  position: fixed; top: 0; left: 0; width: 100%;
+  /* nav 내부 inner-container에 여백이 있으므로 여기서는 padding 제거 */
+  padding: calc(1.5rem + env(safe-area-inset-top, 0px)) 0; 
+  z-index: 500; mix-blend-mode: difference; color: #fff;
+  opacity: 0; animation: fadeInNav 1s 0.8s forwards; pointer-events: none;
+}
 @keyframes fadeInNav { to { opacity: 1; pointer-events: auto; } }
+
+/* nav 전용 inner-container */
+nav .inner-container { display: flex; justify-content: space-between; align-items: center; padding: 0 var(--pad-x); max-width: 100%; }
 .logo { font-size: 1rem; letter-spacing: 0.05em; text-decoration: none; color: inherit; text-transform: uppercase; font-weight: 500; }
 .menu-btn { font-size: 0.9rem; text-transform: uppercase; background: none; border: none; color: inherit; font-weight: 500; transition: opacity 0.3s; }
 body.is-touch .menu-btn { cursor: pointer; padding: 10px; margin: -10px; }
@@ -103,15 +120,26 @@ body.is-touch .menu-btn { cursor: pointer; padding: 10px; margin: -10px; }
     HERO SECTION
 ══════════════════════════════════════ */
 .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; position: relative; }
-.hero-content { width: 100%; display: flex; flex-direction: column; justify-content: center; }
+.hero .inner-container { width: 100%; display: flex; flex-direction: column; justify-content: center; position: relative; }
+.hero-content { width: 100%; }
 .hero-tag { font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2rem; display: block; font-weight: 500;}
-.hero-headline { font-family: 'Poppins', sans-serif; font-size: clamp(3rem, 11vw, 10rem); font-weight: 900; line-height: 0.85; letter-spacing: -0.04em; text-transform: uppercase; word-break: keep-all; margin: 0; }
+
+.hero-headline { 
+  font-family: 'Poppins', sans-serif; font-size: clamp(3rem, 11vw, 10rem); 
+  font-weight: 900; line-height: 0.85; letter-spacing: -0.04em; 
+  text-transform: uppercase; word-break: keep-all; margin: 0;
+  /* [NEW FIX] 타이틀 텍스트가 컨테이너 여백 안에 들어오도록 수정 */
+  width: 100%;
+}
 .solid-text span { color: var(--ink); -webkit-text-stroke: 2px transparent; }
 @media (hover: hover) { .solid-text span:hover { color: transparent; -webkit-text-stroke: 2px var(--ink); } }
 .outline-text span { color: transparent; font-style: italic; -webkit-text-stroke: 2px var(--ink); }
 @media (hover: hover) { .outline-text span:hover { color: var(--ink); -webkit-text-stroke: 0px transparent; } }
 
-.scroll-indicator { position: absolute; bottom: clamp(2rem, 5vh, 4rem); left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
+.scroll-indicator {
+  position: absolute; bottom: clamp(2rem, 5vh, 4rem); left: 0; width: 100%;
+  display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
+}
 .scroll-indicator span { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.2em; color: var(--ink-light); text-align: center; }
 .scroll-indicator .line { width: 1px; height: 50px; background: rgba(17, 17, 17, 0.2); position: relative; overflow: hidden; }
 .scroll-indicator .dot { width: 100%; height: 30%; background: var(--ink); position: absolute; top: -30%; animation: scrollDrop 1.5s infinite ease-in-out; }
@@ -121,8 +149,15 @@ body.is-touch .menu-btn { cursor: pointer; padding: 10px; margin: -10px; }
     EXPERIENCE (Timeline)
 ══════════════════════════════════════ */
 .exp-list { display: flex; flex-direction: column; width: 100%; border-top: 1px solid var(--line); }
-.exp-item { position: relative; display: grid; grid-template-columns: 1fr 2.5fr 1.5fr auto; gap: 2rem; align-items: start; padding: 3rem 1rem; border-bottom: 1px solid var(--line); text-decoration: none; color: inherit; transition: color 0.4s var(--epo), padding 0.5s var(--epo); }
+.exp-item {
+  position: relative; display: grid; grid-template-columns: 1fr 2.5fr 1.5fr auto; gap: 2rem; align-items: start;
+  /* [NEW FIX] 리스트 항목 내부 패딩 조정 - 이너 컨테이너에 의해 여백이 이미 잡혀있으므로 padding 제거 */
+  padding: 3rem 0; 
+  border-bottom: 1px solid var(--line); text-decoration: none; color: inherit;
+  transition: color 0.4s var(--epo), padding 0.5s var(--epo);
+}
 .exp-item::before { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background: var(--ink); transition: height 0.5s var(--epo); z-index: -1; }
+/* 호버 시 배경 반전 디자인을 유지하려면, 이너 컨테이너 밖으로 배경이 나가야 하므로 exp-list에 여백을 주는 방식 대신 exp-item 내부에 여백을 주는 방식 유지 */
 .exp-item:hover { color: var(--bg); padding-left: 2rem; padding-right: 2rem; border-bottom-color: transparent;}
 .exp-item:hover::before { height: 100%; }
 .exp-year { font-size: 1.2rem; font-weight: 500; }
@@ -132,7 +167,13 @@ body.is-touch .menu-btn { cursor: pointer; padding: 10px; margin: -10px; }
 .exp-role { font-size: 1rem; pointer-events: none; }
 .exp-arrow { font-size: 1.8rem; font-weight: 300; transition: transform 0.4s var(--epo); }
 .exp-item:hover .exp-arrow { transform: translate(10px, -10px); }
-@media (max-width: 1024px) { .exp-item { grid-template-columns: 1fr; gap: 1rem; padding: 2.5rem 0; } .exp-item:hover { padding-left: 0; padding-right: 0; } .exp-year { margin-bottom: -0.5rem; font-size: 1rem; color: #555; } .exp-name { font-size: 1.4rem; } .exp-role { font-size: 0.95rem; opacity: 0.7;} .exp-arrow { display: none; } }
+
+@media (max-width: 1024px) { 
+  .exp-item { grid-template-columns: 1fr; gap: 1rem; padding: 2.5rem 0; } 
+  .exp-item:hover { padding-left: 0; padding-right: 0; } 
+  .exp-year { margin-bottom: -0.5rem; font-size: 1rem; color: #555; } 
+  .exp-name { font-size: 1.4rem; } .exp-role { font-size: 0.95rem; opacity: 0.7;} .exp-arrow { display: none; } 
+}
 
 /* ══════════════════════════════════════
     SERVICES
@@ -159,9 +200,12 @@ body.is-touch .menu-btn { cursor: pointer; padding: 10px; margin: -10px; }
 ══════════════════════════════════════ */
 footer#contact { 
   position: fixed; bottom: 0; left: 0; width: 100%; height: 100dvh; z-index: 1;
-  display: flex; flex-direction: column; background: var(--ink); color: var(--bg); text-align: center; overflow: hidden; transition: opacity 0.6s var(--epo);
+  display: flex; flex-direction: column; 
+  background: var(--ink); color: var(--bg); text-align: center; overflow: hidden; 
+  transition: opacity 0.6s var(--epo);
 }
 body.on-intro footer#contact { opacity: 0; }
+
 .contact-marquee-wrapper { position: absolute; top: 50%; left: 0; width: 100%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 1.5rem; pointer-events: none; opacity: 0.15; z-index: 1; }
 .contact-marquee { display: flex; white-space: nowrap; font-family: 'Poppins', sans-serif; font-size: clamp(3rem, 12vw, 6rem); font-weight: 900; text-transform: uppercase; color: transparent; -webkit-text-stroke: 1.5px var(--bg); }
 .contact-marquee span { padding-right: 2rem; display: flex; gap: 2rem; }
@@ -170,17 +214,17 @@ body.on-intro footer#contact { opacity: 0; }
 @keyframes marquee-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 @keyframes marquee-right { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
 
-footer#contact > .container:not(.footer-bottom) { flex: 1; display: flex; align-items: center; justify-content: center; }
+footer#contact > .inner-container { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
 .footer-title { position: relative; z-index: 2; font-size: clamp(3.5rem, 12vw, 9rem); font-weight: 700; margin: 0; letter-spacing: -0.02em; cursor: none;}
 body.is-touch .footer-title { cursor: pointer; }
 .footer-title a { color: var(--bg); text-decoration: none; position: relative; }
 .footer-title a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: clamp(2px, 0.5vw, 6px); background: var(--bg); transform: scaleX(0); transform-origin: right; transition: transform 0.5s var(--epo); }
 .footer-title a:hover::after { transform: scaleX(1); transform-origin: left; }
-.footer-bottom { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding: 2rem var(--pad-x); border-top: 1px solid rgba(255,255,255,0.15); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.6); width: 100%; max-width: 1400px; margin: 0 auto; box-sizing: border-box; }
+.footer-bottom { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding: 2rem 0; border-top: 1px solid rgba(255,255,255,0.15); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.6); width: 100%; max-width: 1400px; margin: 0 auto; box-sizing: border-box; }
 @media (max-width: 640px) { .footer-bottom { flex-direction: column; gap: 1rem; padding-bottom: 2rem; } }
 
 /* ══════════════════════════════════════
-    [NEW] CONTACT FORM POPUP
+    CONTACT FORM POPUP
 ══════════════════════════════════════ */
 .contact-form-overlay {
   position: fixed; inset: 0; background: var(--ink); color: var(--bg);
@@ -191,7 +235,9 @@ body.is-touch .footer-title { cursor: pointer; }
 .contact-form-overlay.open { visibility: visible; opacity: 1; }
 
 .contact-form-container {
-  width: 100%; max-width: 600px; padding: var(--pad-x);
+  width: 100%; max-width: 600px; 
+  /* [NEW FIX] 팝업 내부 여백을 토큰값으로 통일 */
+  padding: 0 var(--pad-x); 
   display: flex; flex-direction: column; gap: 3rem;
   transform: translateY(30px); transition: transform 0.6s var(--epo) 0.1s;
 }
@@ -228,7 +274,6 @@ body.is-touch .cf-submit-btn { cursor: pointer; }
   animation: spin 0.8s linear infinite;
 }
 .cf-submit-btn.success { background: #2D5BE3; color: #fff; pointer-events: none; }
-
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ══════════════════════════════════════
@@ -238,7 +283,8 @@ body.is-touch .cf-submit-btn { cursor: pointer; }
 .project-detail-overlay.open { visibility: visible; opacity: 1; }
 
 .floating-close-btn {
-  position: fixed; top: clamp(1rem, 3vw, 2rem); right: clamp(1.5rem, 6vw, 4rem);
+  /* [NEW FIX] 닫기 버튼 위치 조정 - 토큰값 사용 */
+  position: fixed; top: clamp(1rem, 3vw, 2rem); right: var(--pad-x); 
   width: 50px; height: 50px; border-radius: 50%;
   background: var(--ink); color: var(--bg); border: 1px solid rgba(255,255,255,0.1);
   display: flex; align-items: center; justify-content: center;
@@ -254,7 +300,11 @@ body.is-touch .floating-close-btn { cursor: pointer; }
 .pd-scroll-area::-webkit-scrollbar { display: none; }
 .pd-scroll-area.show-content { opacity: 1; }
 
-.pd-content { padding: 6rem var(--pad-x) 8rem; max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+/* [NEW FIX] 상세화면 내부 여백을 토큰값으로 통일 */
+.pd-content { 
+  padding: 6rem var(--pad-x) 8rem; 
+  max-width: 1400px; margin: 0 auto; width: 100%; box-sizing: border-box; 
+}
 .pd-hero-title { font-size: clamp(2.5rem, 7vw, 6rem); font-weight: 700; line-height: 1.1; margin-bottom: 3rem; letter-spacing: -0.02em; max-width: 90%; }
 .pd-meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 2rem 0; margin-bottom: 4rem; }
 .pd-meta-item { display: flex; flex-direction: column; gap: 0.5rem; }
@@ -276,8 +326,10 @@ body.is-touch .floating-close-btn { cursor: pointer; }
 <div id="cursor"></div>
 
 <nav id="navbar">
-  <a href="#main" class="logo mono hover-target">KDY.portfolio</a>
-  <button class="menu-btn mono hover-target" id="menuBtn">MENU</button>
+  <div class="inner-container hover-target">
+    <a href="#main" class="logo mono">KDY.portfolio</a>
+    <button class="menu-btn mono" id="menuBtn">MENU</button>
+  </div>
 </nav>
 
 <div class="menu-overlay" id="menuOverlay">
@@ -289,14 +341,16 @@ body.is-touch .floating-close-btn { cursor: pointer; }
 </div>
 
 <div id="page-wrapper">
-  <section class="hero container" id="main">
-    <div class="hero-content">
-      <span class="hero-tag mono fade-up">Service Planner & Project Leader</span>
-      <h1 class="hero-headline poppins">
-        <span class="text-reveal solid-text"><span class="hover-target">ARCHITECTING</span></span><br>
-        <span class="text-reveal outline-text"><span class="hover-target">DIGITAL</span></span><br>
-        <span class="text-reveal solid-text"><span class="hover-target">EXPERIENCES.</span></span>
-      </h1>
+  <section class="hero" id="main">
+    <div class="inner-container section-padding">
+      <div class="hero-content">
+        <span class="hero-tag mono fade-up">Service Planner & Project Leader</span>
+        <h1 class="hero-headline poppins">
+          <span class="text-reveal solid-text"><span class="hover-target">ARCHITECTING</span></span><br>
+          <span class="text-reveal outline-text"><span class="hover-target">DIGITAL</span></span><br>
+          <span class="text-reveal solid-text"><span class="hover-target">EXPERIENCES.</span></span>
+        </h1>
+      </div>
     </div>
     <div class="scroll-indicator fade-up">
       <span>SCROLL</span>
@@ -304,34 +358,36 @@ body.is-touch .floating-close-btn { cursor: pointer; }
     </div>
   </section>
 
-  <section class="section-padding container" id="about">
-    <div class="sticky-wrapper">
-      <div class="sticky-header fade-up">
-        <span class="sec-number serif">01</span>
-        <h2 class="sec-title serif">Service<br>Expertise</h2>
-        <p class="sec-desc">표면적 형태를 넘어, 변수를 통제하고 시스템의 안정성을 담보하는 견고한 UI/UX 정책 및 구조 설계.</p>
-      </div>
-      <div class="scroll-content">
-        <div class="srv-list">
-          <div class="srv-item fade-up">
-            <div class="srv-head"><h3 class="srv-title serif">Service Planning</h3><span class="srv-num mono">1/4</span></div>
-            <p class="srv-desc">비즈니스 임팩트와 사용자 경험(UX)을 완벽하게 연결하는 최적의 서비스 플로우 구축.</p>
-            <div class="srv-tags mono"><span class="srv-tag">Requirement Analysis</span><span class="srv-tag">Flow Design</span></div>
-          </div>
-          <div class="srv-item fade-up">
-            <div class="srv-head"><h3 class="srv-title serif">UI/UX Strategy</h3><span class="srv-num mono">2/4</span></div>
-            <p class="srv-desc">엣지 케이스와 예외 상황을 선제적으로 방어하는 논리적이고 정교한 인터페이스 정책 수립.</p>
-            <div class="srv-tags mono"><span class="srv-tag">Interface Policy</span><span class="srv-tag">Prototyping</span></div>
-          </div>
-          <div class="srv-item fade-up">
-            <div class="srv-head"><h3 class="srv-title serif">Project Leading</h3><span class="srv-num mono">3/4</span></div>
-            <p class="srv-desc">복잡한 이해관계의 간극을 조율하고, 일정 및 리스크를 완벽하게 통제하여 프로젝트 성공 완수.</p>
-            <div class="srv-tags mono"><span class="srv-tag">Schedule Management</span><span class="srv-tag">Communication</span></div>
-          </div>
-          <div class="srv-item fade-up">
-            <div class="srv-head"><h3 class="srv-title serif">Research</h3><span class="srv-num mono">4/4</span></div>
-            <p class="srv-desc">정량적 데이터와 정성적 유저 리서치를 교차 검증하여, 현상의 이면에 있는 '본질적 문제' 정의 및 솔루션 도출.</p>
-            <div class="srv-tags mono"><span class="srv-tag">User Interview</span><span class="srv-tag">Data Insight</span></div>
+  <section class="section-padding" id="about">
+    <div class="inner-container">
+      <div class="sticky-wrapper">
+        <div class="sticky-header fade-up">
+          <span class="sec-number serif">01</span>
+          <h2 class="sec-title serif">Service<br>Expertise</h2>
+          <p class="sec-desc">표면적 형태를 넘어, 변수를 통제하고 시스템의 안정성을 담보하는 견고한 UI/UX 정책 및 구조 설계.</p>
+        </div>
+        <div class="scroll-content">
+          <div class="srv-list">
+            <div class="srv-item fade-up">
+              <div class="srv-head"><h3 class="srv-title serif">Service Planning</h3><span class="srv-num mono">1/4</span></div>
+              <p class="srv-desc">비즈니스 임팩트와 사용자 경험(UX)을 완벽하게 연결하는 최적의 서비스 플로우 구축.</p>
+              <div class="srv-tags mono"><span class="srv-tag">Requirement Analysis</span><span class="srv-tag">Flow Design</span></div>
+            </div>
+            <div class="srv-item fade-up">
+              <div class="srv-head"><h3 class="srv-title serif">UI/UX Strategy</h3><span class="srv-num mono">2/4</span></div>
+              <p class="srv-desc">엣지 케이스와 예외 상황을 선제적으로 방어하는 논리적이고 정교한 인터페이스 정책 수립.</p>
+              <div class="srv-tags mono"><span class="srv-tag">Interface Policy</span><span class="srv-tag">Prototyping</span></div>
+            </div>
+            <div class="srv-item fade-up">
+              <div class="srv-head"><h3 class="srv-title serif">Project Leading</h3><span class="srv-num mono">3/4</span></div>
+              <p class="srv-desc">복잡한 이해관계의 간극을 조율하고, 일정 및 리스크를 완벽하게 통제하여 프로젝트 성공 완수.</p>
+              <div class="srv-tags mono"><span class="srv-tag">Schedule Management</span><span class="srv-tag">Communication</span></div>
+            </div>
+            <div class="srv-item fade-up">
+              <div class="srv-head"><h3 class="srv-title serif">Research</h3><span class="srv-num mono">4/4</span></div>
+              <p class="srv-desc">정량적 데이터와 정성적 유저 리서치를 교차 검증하여, 현상의 이면에 있는 '본질적 문제' 정의 및 솔루션 도출.</p>
+              <div class="srv-tags mono"><span class="srv-tag">User Interview</span><span class="srv-tag">Data Insight</span></div>
+            </div>
           </div>
         </div>
       </div>
@@ -345,40 +401,42 @@ body.is-touch .floating-close-btn { cursor: pointer; }
     </div>
   </div>
 
-  <section class="section-padding container" id="work">
-    <div class="sticky-wrapper">
-      <div class="sticky-header fade-up">
-        <span class="sec-number serif">02</span>
-        <h2 class="sec-title serif">Selected<br>History</h2>
-        <p class="sec-desc">대규모 금융 시스템부터 이커머스까지, 명확한 비즈니스 성과를 창출한 핵심 프로젝트 수행 이력.</p>
-      </div>
-      <div class="scroll-content">
-        <div class="exp-list">
-          <a href="#" class="exp-item hover-target fade-up" data-id="p1" data-title="NH기업뱅킹 도급운영 총괄" data-role="총괄 PL" data-year="2026" data-client="NH Bank" data-disc="Project Management">
-            <div class="exp-year mono">2026</div>
-            <div class="exp-details"><h3 class="exp-name">NH기업뱅킹 도급운영 총괄</h3><p class="exp-desc">요구사항 분석부터 배포까지, 운영 주기 전반의 일정 및 리스크 관리 총괄.</p></div>
-            <div class="exp-role mono">PL (100%)</div><div class="exp-arrow">↗</div>
-          </a>
-          <a href="#" class="exp-item hover-target fade-up" data-id="p2" data-title="비대면 신규가입 & 전자약정 기획" data-role="Service Planner" data-year="2025" data-client="NH Bank" data-disc="UI/UX Planning">
-            <div class="exp-year mono">2025</div>
-            <div class="exp-details"><h3 class="exp-name">비대면 신규가입 & 전자약정 기획</h3><p class="exp-desc">개인/법인 여신 전자약정 및 비대면 입출금 계좌 신규 가입 플로우 전체 설계.</p></div>
-            <div class="exp-role mono">Planner (100%)</div><div class="exp-arrow">↗</div>
-          </a>
-          <a href="#" class="exp-item hover-target fade-up" data-id="p3" data-title="NH기업뱅킹 차세대 구축" data-role="UI/UX Planner" data-year="2024" data-client="NH Bank" data-disc="UI/UX Planning">
-            <div class="exp-year mono">2024</div>
-            <div class="exp-details"><h3 class="exp-name">NH기업뱅킹 차세대 구축</h3><p class="exp-desc">조회·이체 전반 UIUX 개편, 금융 허브 연계 기획 및 입출금 알림 PUSH 서비스 개선.</p></div>
-            <div class="exp-role mono">Planner (100%)</div><div class="exp-arrow">↗</div>
-          </a>
-          <a href="#" class="exp-item hover-target fade-up" data-id="p4" data-title="디지털 플랫폼 고도화" data-role="Service Planner" data-year="2023" data-client="Financial Sector" data-disc="Service Planning">
-            <div class="exp-year mono">2023</div>
-            <div class="exp-details"><h3 class="exp-name">디지털 플랫폼 고도화</h3><p class="exp-desc">비대면 개인사업자 전용 오픈뱅킹 기획. 계좌 연결 흐름 및 인증 프로세스 최적화.</p></div>
-            <div class="exp-role mono">Planner (100%)</div><div class="exp-arrow">↗</div>
-          </a>
-          <a href="#" class="exp-item hover-target fade-up" data-id="p5" data-title="컴퓨존 자사몰 고도화 및 도메인 확장" data-role="Web/App Planner" data-year="2019-22" data-client="Compuzone" data-disc="Service Planning">
-            <div class="exp-year mono">2019-22</div>
-            <div class="exp-details"><h3 class="exp-name">컴퓨존 자사몰 고도화 및 도메인 확장</h3><p class="exp-desc">자사몰 메인/상세 개편 및 검색 알고리즘 고도화. 신규 서비스 도메인 기획 전개.</p></div>
-            <div class="exp-role mono">Planner (100%)</div><div class="exp-arrow">↗</div>
-          </a>
+  <section class="section-padding" id="work">
+    <div class="inner-container">
+      <div class="sticky-wrapper">
+        <div class="sticky-header fade-up">
+          <span class="sec-number serif">02</span>
+          <h2 class="sec-title serif">Selected<br>History</h2>
+          <p class="sec-desc">대규모 금융 시스템부터 이커머스까지, 명확한 비즈니스 성과를 창출한 핵심 프로젝트 수행 이력.</p>
+        </div>
+        <div class="scroll-content">
+          <div class="exp-list">
+            <a href="#" class="exp-item hover-target fade-up" data-id="p1" data-title="NH기업뱅킹 도급운영 총괄" data-role="총괄 PL" data-year="2026" data-client="NH Bank" data-disc="Project Management">
+              <div class="exp-year mono">2026</div>
+              <div class="exp-details"><h3 class="exp-name">NH기업뱅킹 도급운영 총괄</h3><p class="exp-desc">요구사항 분석부터 배포까지, 운영 주기 전반의 일정 및 리스크 관리 총괄.</p></div>
+              <div class="exp-role mono">PL (100%)</div><div class="exp-arrow">↗</div>
+            </a>
+            <a href="#" class="exp-item hover-target fade-up" data-id="p2" data-title="비대면 신규가입 & 전자약정 기획" data-role="Service Planner" data-year="2025" data-client="NH Bank" data-disc="UI/UX Planning">
+              <div class="exp-year mono">2025</div>
+              <div class="exp-details"><h3 class="exp-name">비대면 신규가입 & 전자약정 기획</h3><p class="exp-desc">개인/법인 여신 전자약정 및 비대면 입출금 계좌 신규 가입 플로우 전체 설계.</p></div>
+              <div class="exp-role mono">Planner (100%)</div><div class="exp-arrow">↗</div>
+            </a>
+            <a href="#" class="exp-item hover-target fade-up" data-id="p3" data-title="NH기업뱅킹 차세대 구축" data-role="UI/UX Planner" data-year="2024" data-client="NH Bank" data-disc="UI/UX Planning">
+              <div class="exp-year mono">2024</div>
+              <div class="exp-details"><h3 class="exp-name">NH기업뱅킹 차세대 구축</h3><p class="exp-desc">조회·이체 전반 UIUX 개편, 금융 허브 연계 기획 및 입출금 알림 PUSH 서비스 개선.</p></div>
+              <div class="exp-role mono">Planner (100%)</div><div class="exp-arrow">↗</div>
+            </a>
+            <a href="#" class="exp-item hover-target fade-up" data-id="p4" data-title="디지털 플랫폼 고도화" data-role="Service Planner" data-year="2023" data-client="Financial Sector" data-disc="Service Planning">
+              <div class="exp-year mono">2023</div>
+              <div class="exp-details"><h3 class="exp-name">디지털 플랫폼 고도화</h3><p class="exp-desc">비대면 개인사업자 전용 오픈뱅킹 기획. 계좌 연결 흐름 및 인증 프로세스 최적화.</p></div>
+              <div class="exp-role mono">Planner (100%)</div><div class="exp-arrow">↗</div>
+            </a>
+            <a href="#" class="exp-item hover-target fade-up" data-id="p5" data-title="컴퓨존 자사몰 고도화 및 도메인 확장" data-role="Web/App Planner" data-year="2019-22" data-client="Compuzone" data-disc="Service Planning">
+              <div class="exp-year mono">2019-22</div>
+              <div class="exp-details"><h3 class="exp-name">컴퓨존 자사몰 고도화 및 도메인 확장</h3><p class="exp-desc">자사몰 메인/상세 개편 및 검색 알고리즘 고도화. 신규 서비스 도메인 기획 전개.</p></div>
+              <div class="exp-role mono">Planner (100%)</div><div class="exp-arrow">↗</div>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -396,12 +454,14 @@ body.is-touch .floating-close-btn { cursor: pointer; }
       <span>SALUT • ALOHA • PRIVET • こんにちは • SAWASDEE • HALLO • OLÀ • HEJ • KAMUSTA •</span>
     </div>
   </div>
-  <div class="container fade-up">
-    <h2 class="footer-title serif"><a href="#" id="open-contact" class="hover-target">Let's talk ↗</a></h2>
-  </div>
-  <div class="footer-bottom mono container fade-up">
-    <span>Based in South Korea</span>
-    <span>© <span id="year"></span> Kim Deokyong</span>
+  <div class="inner-container">
+    <div class="fade-up">
+      <h2 class="footer-title serif"><a href="#" id="open-contact" class="hover-target">Let's talk ↗</a></h2>
+    </div>
+    <div class="footer-bottom mono fade-up">
+      <span>Based in South Korea</span>
+      <span>© <span id="year"></span> Kim Deokyong</span>
+    </div>
   </div>
 </footer>
 
@@ -458,7 +518,7 @@ body.is-touch .floating-close-btn { cursor: pointer; }
 const projectData = {
   "p1": { challenge: "<p>기존 기업뱅킹 서비스의 운영 안정성 확보 및 사용자 피드백에 기반한 지속적인 사용성 개선 요구 증가.</p><p>대규모 금융 트래픽 환경에서의 무중단 배포 및 리스크 관리 필요성 대두.</p>", solution: "<p>운영 기간 전체의 마일스톤 수립 및 요구사항 사전 검증 프로세스 도입.</p><p>이해관계자 간의 커뮤니케이션 채널을 일원화하고, 배포 전 리스크 체크리스트를 시스템화하여 무결점 운영 환경 구축.</p>" },
   "p2": { challenge: "<p>오프라인 영업점 방문에 의존하던 법인 및 개인사업자의 여신 약정 프로세스로 인한 고객 이탈 발생.</p><p>복잡한 서류 제출 과정 축소 및 비대면 채널 전환율 증대 필요.</p>", solution: "<p>비대면 환경에 최적화된 법인 전자금융 신규 가입 및 여신 전자약정 플로우 전면 설계.</p><p>복잡한 인증 및 서류 제출 과정을 직관적인 UI로 재구성하여 사용자 마찰(Friction) 최소화 및 전환율 극대화 달성.</p>" },
-  "p3": { challenge: "<p>노후화된 기업뱅킹 플랫폼의 전면 개편. 파편화된 조회/이체 플로우 통합 필요.</p><p>기업 고객의 복잡한 금융 업무를 직관적으로 지원하는 차세대 UI/UX 뼈대 설계 대두.</p>", solution: "<p>조회·이체 전반의 UI/UX 사용성 평가를 통한 병목 구간 식별 및 뎁스(Depth) 최소화 달성.</p><p>금융 허브 연계 기능 및 입출금 알림 PUSH 서비스의 정책을 고도화하여 기업 맞춤형 디지털 워크스페이스 제공.</p>" },
+  "p3": { challenge: "<p>노후화된 기업뱅킹 플랫폼의 전면 개편. 파편화된 조회/이체 플로우 통합 필요.</p><p>기업 고객의 복잡한 금융 업무를 직관적으로 지원하는 차세대 UI/UX 뼈대 설계 대두.</p>", solution: "<p>조회·이체 전반의 UI/UX 사용성 평가를 통한 병목 구간 식별 및 뎁스(Depth) 최소화 달성.</p><p>금융 허브 연계 기능 및 입출금 알림 PUSH 서비스의 정책 고도화하여 기업 맞춤형 디지털 워크스페이스 제공.</p>" },
   "p4": { challenge: "<p>마이데이터 시대에 발맞춘 비대면 개인사업자 전용 오픈뱅킹 서비스 신규 론칭 과제.</p><p>타행 계좌 연동 및 인증 과정에서의 사용자 이탈률을 낮추고 완결성을 높이는 것이 핵심 과제.</p>", solution: "<p>타행 계좌 연결 흐름 및 인증 프로세스를 최소 단계로 압축한 최적의 서비스 플로우 기획.</p><p>데이터 기반의 예외 케이스(Edge Case)를 선제적으로 방어하는 인터페이스 정책 수립 및 에러 가이드라인 구축.</p>" },
   "p5": { challenge: "<p>방대한 IT 기기 DB를 보유한 커머스 특성상, 사용자가 원하는 상품에 빠르게 도달할 수 있는 탐색 경험 고도화 필요.</p><p>신규 모빌리티(전기차) 및 농업(NH오늘농사) 도메인으로의 서비스 확장 전개 과제.</p>", solution: "<p>자사몰 메인 및 상세 페이지 UI 전면 개편, 검색 알고리즘 고도화를 통한 유저 탐색 피로도 감소.</p><p>신규 도메인에 대한 정성/정량적 유저 리서치를 기반으로 맞춤형 앱 기획 및 성공적인 론칭 완수.</p>" }
 };
@@ -489,11 +549,22 @@ const menuBtn = document.getElementById('menuBtn');
 const menuOverlay = document.getElementById('menuOverlay');
 const pdOverlay = document.getElementById('project-detail');
 const cfOverlay = document.getElementById('contact-form-modal');
+const contactFooter = document.getElementById('contact');
 const body = document.body;
 
 const isOverFooter = () => window.scrollY >= document.body.scrollHeight - window.innerHeight - 50;
 
+const toggleFooterVisibility = () => {
+  if (window.scrollY > 100) {
+    contactFooter.classList.add('is-visible');
+  } else {
+    contactFooter.classList.remove('is-visible');
+  }
+};
+
 window.addEventListener('scroll', () => {
+  toggleFooterVisibility();
+
   if (menuOverlay.classList.contains('open') || body.classList.contains('on-intro') || pdOverlay.classList.contains('open') || cfOverlay.classList.contains('open')) return; 
   if (isOverFooter()) { nav.style.mixBlendMode = "normal"; nav.style.color = "#fff"; } 
   else { nav.style.mixBlendMode = "difference"; nav.style.color = "#fff"; }
@@ -548,7 +619,7 @@ window.addEventListener('wheel', (e) => {
 let touchStartY = 0;
 window.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
 window.addEventListener('touchmove', e => {
-  if (isAutoScrolling || body.classList.contains('on-intro') || pdOverlay.classList.contains('open') || cfOverlay.classList.contains('open')) return;
+  if (isAutoScrolling || body.classList.contains('on-intro) || pdOverlay.classList.contains('open') || cfOverlay.classList.contains('open')) return;
   let diff = touchStartY - e.touches[0].clientY;
   if (window.scrollY <= 10 && diff > 30) {
     isAutoScrolling = true; lenis.scrollTo('#about', { duration: 1.5 }); setTimeout(() => { isAutoScrolling = false; }, 1500);
@@ -562,80 +633,60 @@ window.addEventListener('touchmove', e => {
   }
 }, { passive: true });
 
-// ══════════════════════════════════════
-// [NEW] CONTACT FORM LOGIC
-// ══════════════════════════════════════
+
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwuK3oSssvQGYBhAlvOXNnwUd3-GorADzMM56YAizZR5IErv2Qx9aSX4jG7AFGpJFPX/exec"; 
+
 const openContactBtn = document.getElementById('open-contact');
 const closeContactBtn = document.getElementById('cf-close');
 const contactForm = document.getElementById('contactForm');
 const submitBtn = document.getElementById('submitBtn');
 
-// 💡 추후 구글 시트를 연동할 때 아래 주소를 생성하신 웹앱 URL로 교체하세요.
-const GOOGLE_SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_URL_HERE"; 
-
-const closeContactModal = () => {
+const closeContactModal = (fromPopState = false) => {
+  if (!cfOverlay.classList.contains('open')) return;
   cfOverlay.classList.remove('open');
   lenis.start();
   nav.style.opacity = '1'; nav.style.pointerEvents = 'auto';
-  // 폼 초기화
   setTimeout(() => {
     contactForm.reset();
     submitBtn.className = 'cf-submit-btn hover-target';
     submitBtn.innerHTML = '<span>Send Message</span>';
   }, 500);
+  if (!fromPopState) history.back();
 };
 
 openContactBtn.addEventListener('click', (e) => {
   e.preventDefault();
+  history.pushState({ popup: 'contact' }, '', '#contact-form');
   cfOverlay.classList.add('open');
   lenis.stop();
   nav.style.opacity = '0'; nav.style.pointerEvents = 'none';
 });
 
-closeContactBtn.addEventListener('click', closeContactModal);
+closeContactBtn.addEventListener('click', () => closeContactModal(false));
 
 contactForm.addEventListener('submit', (e) => {
   e.preventDefault();
-  
-  // 1단계: 로딩 상태로 변경
   submitBtn.classList.add('loading');
   
-  /* ========================================================
-     [실제 구글 시트 연동 시 주석 해제하여 사용할 코드]
-     
-     fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: new FormData(contactForm)})
-       .then(response => {
-         // 성공 애니메이션 실행
-         submitBtn.classList.remove('loading');
-         submitBtn.classList.add('success');
-         submitBtn.innerHTML = '<span>Message Sent ✓</span>';
-         
-         // 3초 후 모달 닫기
-         setTimeout(closeContactModal, 3000);
-       })
-       .catch(error => alert('전송에 실패했습니다. 다시 시도해주세요.'));
-  ======================================================== */
-
-  // 💡 현재는 테스트용 페이크 타임아웃 (실제 연동 시 삭제)
-  setTimeout(() => {
-    // 2단계: 1초 후 성공 상태로 변경
-    submitBtn.classList.remove('loading');
-    submitBtn.classList.add('success');
-    submitBtn.innerHTML = '<span>Message Sent ✓</span>';
-    
-    // 3단계: 3초 대기 후 자동으로 팝업 닫기
-    setTimeout(closeContactModal, 3000);
-  }, 1000);
+  fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: new FormData(contactForm)})
+    .then(response => {
+      submitBtn.classList.remove('loading');
+      submitBtn.classList.add('success');
+      submitBtn.innerHTML = '<span>Message Sent ✓</span>';
+      setTimeout(() => closeContactModal(false), 3000);
+    })
+    .catch(error => {
+      alert('전송에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      submitBtn.classList.remove('loading');
+    });
 });
 
-
-// 프로젝트 상세페이지 제어 로직
 const expItems = document.querySelectorAll('.exp-item');
 const pdClose = document.getElementById('pd-close');
 const pdScroll = document.getElementById('pd-scroll-area');
 let lastRect = null;
 
-const closeOverlay = () => {
+const closeOverlay = (fromPopState = false) => {
   if (!pdOverlay.classList.contains('open')) return;
   const w = document.documentElement.clientWidth;
   const h = window.innerHeight;
@@ -646,17 +697,19 @@ const closeOverlay = () => {
     lenis.start(); 
     nav.style.opacity = '1'; nav.style.pointerEvents = 'auto';
   }, 700);
+  if (!fromPopState) history.back();
 };
 
 expItems.forEach(item => {
   item.addEventListener('click', (e) => {
     e.preventDefault();
+    history.pushState({ popup: 'detail' }, '', '#project-detail');
+    
     document.getElementById('pd-title').textContent = item.getAttribute('data-title');
     document.getElementById('pd-role').textContent = item.getAttribute('data-role');
     document.getElementById('pd-year').textContent = item.getAttribute('data-year');
     document.getElementById('pd-client').textContent = item.getAttribute('data-client');
     document.getElementById('pd-disc').textContent = item.getAttribute('data-disc');
-    
     const projId = item.getAttribute('data-id');
     document.getElementById('pd-challenge').innerHTML = projectData[projId].challenge;
     document.getElementById('pd-solution').innerHTML = projectData[projId].solution;
@@ -680,13 +733,20 @@ expItems.forEach(item => {
   });
 });
 
-pdClose.addEventListener('click', closeOverlay);
+pdClose.addEventListener('click', () => closeOverlay(false));
+
+window.addEventListener('popstate', () => {
+  if (pdOverlay.classList.contains('open')) closeOverlay(true);
+  if (cfOverlay.classList.contains('open')) closeContactModal(true);
+});
+
 window.addEventListener('keydown', (e) => { 
   if (e.key === 'Escape') {
-    if (cfOverlay.classList.contains('open')) closeContactModal();
-    if (pdOverlay.classList.contains('open')) closeOverlay();
+    if (cfOverlay.classList.contains('open')) closeContactModal(false);
+    if (pdOverlay.classList.contains('open')) closeOverlay(false);
   }
 });
+
 </script>
 </body>
 </html>
